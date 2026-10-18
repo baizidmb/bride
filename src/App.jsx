@@ -33,7 +33,7 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(true);
 
   // Filters State
   const [filters, setFilters] = useState({
@@ -80,8 +80,13 @@ export default function App() {
       if (res.pagination) {
         setPagination(res.pagination);
       }
-      if (fetchedData.length > 0 && !activeBiodataNo) {
-        setActiveBiodataNo(fetchedData[0].biodata_no);
+      if (fetchedData.length > 0) {
+        const exists = fetchedData.some(b => String(b.biodata_no) === String(activeBiodataNo));
+        if (!exists) {
+          setActiveBiodataNo(fetchedData[0].biodata_no);
+        }
+      } else {
+        setActiveBiodataNo(null);
       }
     } catch (err) {
       setError(err.message || 'Error loading candidate biodatas');
@@ -95,8 +100,9 @@ export default function App() {
     fetchLiveBiodatas(1, filters);
   }, []);
 
-  const handleApplyFilters = () => {
-    fetchLiveBiodatas(1, filters);
+  const handleApplyFilters = (customFilters) => {
+    const f = customFilters || filters;
+    fetchLiveBiodatas(1, f);
   };
 
   const handleResetFilters = () => {
@@ -225,10 +231,7 @@ export default function App() {
                   filters={filters}
                   setFilters={setFilters}
                   locations={locations}
-                  onApplyFilters={() => {
-                    handleApplyFilters();
-                    setShowFilters(false);
-                  }}
+                  onApplyFilters={handleApplyFilters}
                   onResetFilters={handleResetFilters}
                   totalResults={pagination.total}
                 />

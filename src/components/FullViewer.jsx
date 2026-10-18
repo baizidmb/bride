@@ -380,27 +380,37 @@ _OrdhekDeen Leads Matchmaking Portal_`;
             </div>
 
             {/* Quick ID Filter */}
-            <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
-              <input
-                type="text"
-                value={filters?.biodata_no || ''}
-                onChange={(e) => setFilters(prev => ({ ...prev, biodata_no: e.target.value }))}
-                onKeyDown={(e) => e.key === 'Enter' && onApplyFilters()}
-                placeholder="বায়োডাটা নং খুঁজুন (e.g. 24590)..."
-                className="w-full pl-8 pr-7 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-mono focus:ring-2 focus:ring-brand-500/20"
-              />
-              {filters?.biodata_no && (
-                <button
-                  onClick={() => {
-                    setFilters(prev => ({ ...prev, biodata_no: '' }));
-                    onApplyFilters();
-                  }}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                >
-                  <X className="h-3.5 w-3.5" />
-                </button>
-              )}
+            <div className="flex items-center gap-1.5">
+              <div className="relative flex-1">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+                <input
+                  type="text"
+                  value={filters?.biodata_no || ''}
+                  onChange={(e) => setFilters(prev => ({ ...prev, biodata_no: e.target.value }))}
+                  onKeyDown={(e) => e.key === 'Enter' && onApplyFilters()}
+                  placeholder="বায়োডাটা নং (e.g. 24590)..."
+                  className="w-full pl-8 pr-7 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-mono focus:ring-2 focus:ring-brand-500/20"
+                />
+                {filters?.biodata_no && (
+                  <button
+                    onClick={() => {
+                      setFilters(prev => ({ ...prev, biodata_no: '' }));
+                      onApplyFilters();
+                    }}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={onApplyFilters}
+                className="py-1.5 px-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs shrink-0 flex items-center gap-1 cursor-pointer"
+                title="খুঁজুন"
+              >
+                <span>খুঁজুন</span>
+              </button>
             </div>
           </div>
 

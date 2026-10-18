@@ -187,42 +187,9 @@ export function getAddressSearchString(b) {
   return (result || JSON.stringify(addr)).toLowerCase();
 }
 
-// 5. Search Biodatas (Offline client search fallback for GitHub Pages)
+// 5. Search Biodatas (Instant local search across 6,416 candidates + remote fallback)
 export async function searchBiodatas(page = 1, limit = 12, userFilters = {}) {
-  // Try remote backend first (when running with Express server)
-  try {
-    const apiFilters = {
-      biodata_type: ['female'],
-      ...userFilters,
-    };
-    if (apiFilters.biodata_no) {
-      apiFilters.biodata_no = Number(apiFilters.biodata_no);
-    }
-
-    const res = await fetch(`/api/search?page=${page}&limit=${limit}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ filters: apiFilters }),
-    });
-
-    if (res.ok) {
-      const json = await res.json();
-      if (json.success && json.data) {
-        return {
-          data: json.data.data || [],
-          pagination: json.data.pagination || {
-            currentPage: page,
-            total: json.data.pagination?.total || (json.data.data ? json.data.data.length : 0),
-            total_pages: json.data.pagination?.total_pages || Math.ceil((json.data.data?.length || 1) / limit)
-          }
-        };
-      }
-    }
-  } catch (e) {
-    // Normal when running statically on GitHub Pages
-  }
-
-  // OFFLINE / GITHUB PAGES CLIENT-SIDE FILTERING (ALL 6,416 CANDIDATES):
+  // 1. Instant client-side search across all 6,416 bundled candidates
   let results = [...bundledBiodatas];
 
   // 1. Filter: Biodata ID
@@ -292,18 +259,52 @@ export async function searchBiodatas(page = 1, limit = 12, userFilters = {}) {
     }
   }
 
-  const total = results.length;
-  const total_pages = Math.max(1, Math.ceil(total / limit));
-  const currentPage = Math.min(Math.max(1, page), total_pages);
-  const start = (currentPage - 1) * limit;
-  const pageSlice = results.slice(start, start + limit);
+  // If results found locally, or general filter search, return local results immediately
+  if (results.length > 0 || !userFilters.biodata_no) {
+    const total = results.length;
+    const total_pages = Math.max(1, Math.ceil(total / limit));
+    const currentPage = Math.min(Math.max(1, page), total_pages);
+    const start = (currentPage - 1) * limit;
+    const pageSlice = results.slice(start, start + limit);
+
+    return {
+      data: pageSlice,
+      pagination: {
+        currentPage,
+        total,
+        total_pages
+      }
+    };
+  }
+
+  // Fallback: If specifically looking for an ID not present in bundled 6,416, try remote
+  try {
+    const res = await fetch(`/api/search?page=${page}&limit=${limit}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filters: { biodata_type: ['female'], biodata_no: Number(userFilters.biodata_no) } }),
+    });
+    if (res.ok) {
+      const json = await res.json();
+      if (json.success && json.data) {
+        return {
+          data: json.data.data || [],
+          pagination: json.data.pagination || {
+            currentPage: page,
+            total: json.data.pagination?.total || 0,
+            total_pages: 1
+          }
+        };
+      }
+    }
+  } catch (_) {}
 
   return {
-    data: pageSlice,
+    data: [],
     pagination: {
-      currentPage,
-      total,
-      total_pages
+      currentPage: 1,
+      total: 0,
+      total_pages: 1
     }
   };
 }
