@@ -20,7 +20,9 @@ import {
   formatAge, 
   formatMaritalStatus, 
   formatLocation, 
-  formatOccupation 
+  formatOccupation,
+  getCandidateContact,
+  getWhatsAppUrl
 } from '../constants';
 
 export default function TableView({ 
@@ -137,7 +139,8 @@ export default function TableView({
             const marital = formatMaritalStatus(lead.marital_status);
             const loc = formatLocation(lead.address);
             const occ = formatOccupation(lead.occupation);
-            const phone = lead.contact_info?.phone;
+            const contact = getCandidateContact(lead.biodata_no, lead);
+            const phone = contact.phone;
 
             return (
               <div key={lead.biodata_no} className="p-4 space-y-3 bg-white hover:bg-slate-50/50">
@@ -167,41 +170,33 @@ export default function TableView({
                 <div className="p-2.5 rounded-xl bg-emerald-50/80 border border-emerald-200 flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <Phone className="h-4 w-4 text-emerald-700 shrink-0" />
-                    {phone ? (
-                      <span className="font-mono text-xs font-black text-emerald-900">{phone}</span>
-                    ) : (
-                      <span className="text-xs font-medium text-slate-500 italic">নম্বর নেই</span>
-                    )}
+                    <span className="font-mono text-xs font-black text-emerald-900">{phone}</span>
                   </div>
 
                   <div className="flex items-center gap-1.5">
-                    {phone ? (
-                      <>
-                        <a
-                          href={`tel:${phone.replace(/[^0-9+]/g, '')}`}
-                          className="p-1.5 rounded-lg bg-emerald-600 text-white shadow-xs"
-                          title="কল করুন"
-                        >
-                          <PhoneCall className="h-3.5 w-3.5" />
-                        </a>
-                        <a
-                          href={`https://wa.me/${phone.replace(/[^0-9]/g, '').replace(/^0/, '880')}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-1.5 rounded-lg bg-green-500 text-white shadow-xs"
-                          title="WhatsApp"
-                        >
-                          <MessageCircle className="h-3.5 w-3.5" />
-                        </a>
-                      </>
-                    ) : (
-                      <button
-                        onClick={() => handleStartEditPhone(lead)}
-                        className="text-[11px] font-bold text-emerald-700 underline"
-                      >
-                        + নম্বর যুক্ত
-                      </button>
-                    )}
+                    <a
+                      href={`tel:${phone.replace(/[^0-9+]/g, '')}`}
+                      className="p-1.5 rounded-lg bg-emerald-600 text-white shadow-xs"
+                      title="কল করুন"
+                    >
+                      <PhoneCall className="h-3.5 w-3.5" />
+                    </a>
+                    <a
+                      href={getWhatsAppUrl(phone, lead.biodata_no)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-1.5 rounded-lg bg-green-500 text-white shadow-xs"
+                      title="WhatsApp"
+                    >
+                      <MessageCircle className="h-3.5 w-3.5" />
+                    </a>
+                    <button
+                      onClick={() => handleStartEditPhone(lead)}
+                      className="p-1 text-slate-400 hover:text-slate-700"
+                      title="নম্বর সম্পাদনা"
+                    >
+                      <Edit3 className="h-3.5 w-3.5" />
+                    </button>
                   </div>
                 </div>
 
@@ -273,7 +268,8 @@ export default function TableView({
                 const age = formatAge(lead.age);
                 const loc = formatLocation(lead.address);
                 const occ = formatOccupation(lead.occupation);
-                const phone = lead.contact_info?.phone;
+                const contact = getCandidateContact(lead.biodata_no, lead);
+                const phone = contact.phone;
                 const isEditingThis = editingPhoneId === lead.biodata_no;
 
                 return (
@@ -328,7 +324,7 @@ export default function TableView({
                             <X className="h-3 w-3" />
                           </button>
                         </div>
-                      ) : phone ? (
+                      ) : (
                         <div className="flex items-center gap-2">
                           <span className="font-mono text-xs font-black text-emerald-800">
                             {phone}
@@ -336,18 +332,18 @@ export default function TableView({
                           <a
                             href={`tel:${phone.replace(/[^0-9+]/g, '')}`}
                             className="p-1 rounded bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
-                            title="কল করুন"
+                            title="সরাসরি কল করুন"
                           >
-                            <PhoneCall className="h-3 w-3" />
+                            <PhoneCall className="h-3.5 w-3.5" />
                           </a>
                           <a
-                            href={`https://wa.me/${phone.replace(/[^0-9]/g, '').replace(/^0/, '880')}`}
+                            href={getWhatsAppUrl(phone, lead.biodata_no)}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="p-1 rounded bg-green-50 text-green-700 hover:bg-green-100"
-                            title="হোয়াটসঅ্যাপ"
+                            title="WhatsApp চ্যাট"
                           >
-                            <MessageCircle className="h-3 w-3" />
+                            <MessageCircle className="h-3.5 w-3.5" />
                           </a>
                           <button
                             onClick={() => handleStartEditPhone(lead)}
@@ -357,14 +353,6 @@ export default function TableView({
                             <Edit3 className="h-3 w-3" />
                           </button>
                         </div>
-                      ) : (
-                        <button
-                          onClick={() => handleStartEditPhone(lead)}
-                          className="text-xs font-semibold text-emerald-700 hover:underline flex items-center gap-1"
-                        >
-                          <Phone className="h-3 w-3" />
-                          <span>+ নম্বর যোগ করুন</span>
-                        </button>
                       )}
                     </td>
 

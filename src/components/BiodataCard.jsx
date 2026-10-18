@@ -11,7 +11,9 @@ import {
   ChevronDown,
   FileText,
   UserCheck,
-  Phone
+  Phone,
+  PhoneCall,
+  MessageCircle
 } from 'lucide-react';
 import { 
   LEAD_STATUSES, 
@@ -21,7 +23,9 @@ import {
   formatLocation,
   formatOccupation,
   formatHeight,
-  formatComplexion
+  formatComplexion,
+  getCandidateContact,
+  getWhatsAppUrl
 } from '../constants';
 
 export default function BiodataCard({ 
@@ -45,6 +49,7 @@ export default function BiodataCard({
   const occupation = formatOccupation(biodata.occupation);
   const location = formatLocation(biodata.address);
   const pageViews = biodata.total_page_view || 0;
+  const contact = getCandidateContact(biodataNo, leadData);
 
   const handleStatusChange = (newStatus) => {
     onSaveLead({
@@ -172,12 +177,30 @@ export default function BiodataCard({
             <Briefcase className="h-3.5 w-3.5 text-slate-400 shrink-0" />
             <span className="truncate">{occupation}</span>
           </div>
-          {leadData?.contact_info?.phone && (
-            <div className="flex items-center gap-1.5 text-xs text-emerald-800 font-bold bg-emerald-50 px-2 py-1 rounded-lg border border-emerald-200">
-              <Phone className="h-3 w-3 text-emerald-600" />
-              <span className="font-mono">{leadData.contact_info.phone}</span>
-            </div>
-          )}
+
+          {/* Visible Direct Contact Strip */}
+          <div className="flex items-center justify-between text-xs text-emerald-800 font-bold bg-emerald-50/90 px-2.5 py-1.5 rounded-xl border border-emerald-200 mt-2">
+            <a
+              href={`tel:${contact.phone.replace(/[^0-9+]/g, '')}`}
+              onClick={(e) => e.stopPropagation()}
+              className="inline-flex items-center gap-1 hover:underline"
+              title="সরাসরি কল করুন"
+            >
+              <PhoneCall className="h-3.5 w-3.5 text-emerald-600" />
+              <span className="font-mono">{contact.phone}</span>
+            </a>
+            <a
+              href={getWhatsAppUrl(contact.phone, biodataNo)}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="inline-flex items-center gap-1 text-[11px] font-bold text-green-700 bg-green-100 hover:bg-green-200 px-2 py-0.5 rounded-lg transition-colors"
+              title="WhatsApp মেসেজ"
+            >
+              <MessageCircle className="h-3 w-3" />
+              <span>WhatsApp</span>
+            </a>
+          </div>
         </div>
 
         {/* Star Rating Bar */}

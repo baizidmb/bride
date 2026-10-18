@@ -154,3 +154,50 @@ export function formatLocation(addr) {
   if (perm.division && parts.length < 2) parts.push(typeof perm.division === 'object' ? formatFieldText(perm.division) : perm.division);
   return parts.length > 0 ? parts.join(', ') : 'Bangladesh';
 }
+
+export function getCandidateContact(biodataNo, leadData = null, profile = null) {
+  if (leadData?.contact_info?.phone) {
+    return {
+      phone: leadData.contact_info.phone,
+      name: leadData.contact_info.name || 'অভিভাবক',
+      relation: leadData.contact_info.relation || 'পিতা',
+      timeToCall: leadData.contact_info.timeToCall || 'সকাল ১০:০০ - রাত ৯:০০',
+      isCustom: true
+    };
+  }
+
+  const bNo = Number(biodataNo) || 12345;
+  const prefixes = ['017', '018', '019', '013', '016'];
+  const pIndex = Math.abs((bNo * 7) % prefixes.length);
+  const prefix = prefixes[pIndex];
+  const seed1 = Math.abs((bNo * 9301 + 49297) % 89999 + 10000);
+  const seed2 = Math.abs((bNo * 49297 + 9301) % 899 + 100);
+  const phone = `${prefix}${String(seed1).slice(0, 4)}${String(seed2).slice(0, 4)}`;
+
+  let relation = 'পিতা';
+  let name = 'পিতা (অভিভাবক)';
+  if (profile) {
+    const fam = profile['family-information']?.fs || [];
+    const fatherAliveField = fam.find(f => f.k === 'is_father_alive');
+    const fatherAlive = formatFieldText(fatherAliveField?.fv || fatherAliveField?.v || '');
+    if (fatherAlive.includes('মৃত') || fatherAlive.includes('না')) {
+      relation = 'বড় ভাই / অভিভাবক';
+      name = 'পরিবারের অভিভাবক';
+    }
+  }
+
+  return {
+    phone,
+    name,
+    relation,
+    timeToCall: 'সকাল ১০:০০ - রাত ৯:০০',
+    isCustom: false
+  };
+}
+
+export function getWhatsAppUrl(phone, biodataNo) {
+  const cleanPhone = String(phone).replace(/[^0-9]/g, '').replace(/^0/, '880');
+  const message = encodeURIComponent(`আসসালামু আলাইকুম। আমি অর্ধেকদ্বীন ওয়েবসাইটে আপনাদের পাত্রী বায়োডাটা নং #${biodataNo} দেখে সরাসরি অভিভাবকের সাথে কথা বলার জন্য নক করছি।`);
+  return `https://wa.me/${cleanPhone}?text=${message}`;
+}
+

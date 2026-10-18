@@ -26,7 +26,8 @@ import {
   Sparkles,
   ArrowLeft,
   Calendar,
-  AlertCircle
+  AlertCircle,
+  Clock
 } from 'lucide-react';
 import { 
   LEAD_STATUSES, 
@@ -35,7 +36,9 @@ import {
   formatMaritalStatus, 
   formatLocation, 
   formatOccupation,
-  formatFieldText 
+  formatFieldText,
+  getCandidateContact,
+  getWhatsAppUrl
 } from '../constants';
 
 export default function FullViewer({
@@ -84,21 +87,22 @@ export default function FullViewer({
 
   // Lead Data for activeId
   const leadData = leads.find(l => String(l.biodata_no) === String(activeId));
+  const contactInfo = getCandidateContact(activeId, leadData, profile);
   const isShortlisted = !!leadData && leadData.status !== 'rejected';
   const status = leadData?.status || 'discovered';
   const rating = leadData?.rating || 0;
-  const currentPhone = leadData?.contact_info?.phone || '';
-  const currentGuardian = leadData?.contact_info?.name || '';
-  const currentRelation = leadData?.contact_info?.relation || '';
+  const currentPhone = contactInfo.phone;
+  const currentGuardian = contactInfo.name;
+  const currentRelation = contactInfo.relation;
 
   // Sync input fields when activeId changes
   useEffect(() => {
-    setPhoneInput(currentPhone);
-    setGuardianNameInput(currentGuardian);
-    setRelationInput(currentRelation || 'পিতা');
+    setPhoneInput(contactInfo.phone);
+    setGuardianNameInput(contactInfo.name);
+    setRelationInput(contactInfo.relation || 'পিতা');
     setNotesInput(leadData?.notes || '');
     setIsEditingContact(false);
-  }, [activeId, leadData, currentPhone, currentGuardian, currentRelation]);
+  }, [activeId, leadData, contactInfo.phone, contactInfo.name, contactInfo.relation]);
 
   // Fetch Full Profile Details whenever activeId changes
   useEffect(() => {
@@ -413,7 +417,7 @@ _OrdhekDeen Leads Matchmaking Portal_`;
                 const marital = formatMaritalStatus(b.marital_status);
                 const loc = formatLocation(b.address);
                 const occ = formatOccupation(b.occupation);
-                const hasContact = !!bLead?.contact_info?.phone;
+                const bContact = getCandidateContact(bNo, bLead);
 
                 return (
                   <div
@@ -439,11 +443,6 @@ _OrdhekDeen Leads Matchmaking Portal_`;
                       </div>
 
                       <div className="flex items-center gap-1">
-                        {hasContact && (
-                          <span title="যোগাযোগ নম্বর সংরক্ষিত" className="p-0.5 rounded bg-emerald-100 text-emerald-700">
-                            <Phone className="h-3 w-3" />
-                          </span>
-                        )}
                         <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${bStatusMeta.color}`}>
                           {bStatusMeta.label}
                         </span>
@@ -463,6 +462,30 @@ _OrdhekDeen Leads Matchmaking Portal_`;
                           {bLead.rating}
                         </span>
                       )}
+                    </div>
+
+                    {/* Direct Contact Phone & WhatsApp Row */}
+                    <div className="flex items-center justify-between pt-1.5 mt-0.5 border-t border-slate-100 text-xs">
+                      <a
+                        href={`tel:${bContact.phone}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="inline-flex items-center gap-1 font-mono font-bold text-emerald-800 hover:text-emerald-950 hover:underline"
+                        title="সরাসরি কল করুন"
+                      >
+                        <PhoneCall className="h-3 w-3 text-emerald-600" />
+                        <span>{bContact.phone}</span>
+                      </a>
+                      <a
+                        href={getWhatsAppUrl(bContact.phone, bNo)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-green-100 hover:bg-green-200 text-green-800 font-bold text-[10px] transition-colors"
+                        title="WhatsApp চ্যাট"
+                      >
+                        <MessageCircle className="h-3 w-3" />
+                        <span>WhatsApp</span>
+                      </a>
                     </div>
                   </div>
                 );
@@ -706,74 +729,68 @@ _OrdhekDeen Leads Matchmaking Portal_`;
                   {/* Contact Details Display */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {/* Mobile Phone Card */}
-                    <div className="bg-white/90 p-4 rounded-2xl border border-emerald-100 shadow-xs">
-                      <span className="block text-xs font-bold text-slate-500 mb-1">
-                        অভিভাবকের মোবাইল নম্বর:
-                      </span>
-                      {currentPhone ? (
-                        <div className="space-y-2">
-                          <span className="font-mono text-lg font-black text-emerald-800 tracking-wide block">
-                            {currentPhone}
+                    <div className="bg-white/95 p-4 rounded-2xl border border-emerald-200 shadow-sm space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="block text-xs font-bold text-slate-500">
+                          অভিভাবকের মোবাইল নম্বর:
+                        </span>
+                        {contactInfo.isCustom ? (
+                          <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md">
+                            যাচাইকৃত সংরক্ষিত
                           </span>
-                          <div className="flex items-center gap-2">
-                            <a
-                              href={`tel:${currentPhone.replace(/[^0-9+]/g, '')}`}
-                              className="inline-flex items-center gap-1 py-1 px-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all shadow-xs"
-                            >
-                              <PhoneCall className="h-3 w-3" />
-                              <span>সরাসরি কল</span>
-                            </a>
-                            <a
-                              href={`https://wa.me/${currentPhone.replace(/[^0-9]/g, '').replace(/^0/, '880')}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 py-1 px-2.5 bg-green-500 hover:bg-green-600 text-white rounded-lg text-xs font-bold transition-all shadow-xs"
-                            >
-                              <MessageCircle className="h-3 w-3" />
-                              <span>WhatsApp</span>
-                            </a>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-1.5 text-xs text-slate-600">
-                            <span className="font-mono font-bold text-slate-400">০১XXXXXXXXX</span>
-                            <span className="text-[10px] text-emerald-700 font-semibold bg-emerald-100 px-2 py-0.5 rounded-full">
-                              যাচাইকৃত অভিভাবক
-                            </span>
-                          </div>
-                          <p className="text-[11px] text-slate-500">
-                            যোগাযোগের জন্য নম্বর সংরক্ষণ করতে পাশের বাটনে ক্লিক করুন:
-                          </p>
-                          <button
-                            onClick={() => setIsEditingContact(true)}
-                            className="text-xs font-bold text-emerald-700 hover:text-emerald-800 underline inline-flex items-center gap-1"
+                        ) : (
+                          <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
+                            সরাসরি লাইন
+                          </span>
+                        )}
+                      </div>
+                      
+                      <div className="space-y-2.5">
+                        <span className="font-mono text-xl sm:text-2xl font-black text-emerald-800 tracking-wider block">
+                          {currentPhone}
+                        </span>
+
+                        <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                          <a
+                            href={`tel:${currentPhone.replace(/[^0-9+]/g, '')}`}
+                            className="inline-flex items-center gap-1.5 py-1.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs"
                           >
-                            <span>➕ নম্বর ইনপুট দিন</span>
-                          </button>
+                            <PhoneCall className="h-3.5 w-3.5" />
+                            <span>সরাসরি কল করুন</span>
+                          </a>
+                          <a
+                            href={getWhatsAppUrl(currentPhone, activeId)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 py-1.5 px-3 bg-green-500 hover:bg-green-600 text-white rounded-xl text-xs font-bold transition-all shadow-xs"
+                          >
+                            <MessageCircle className="h-3.5 w-3.5" />
+                            <span>WhatsApp চ্যাট</span>
+                          </a>
                         </div>
-                      )}
+                      </div>
                     </div>
 
                     {/* Guardian Name & Relation */}
-                    <div className="bg-white/90 p-4 rounded-2xl border border-emerald-100 shadow-xs">
-                      <span className="block text-xs font-bold text-slate-500 mb-1">
-                        অভিভাবকের সাথে সম্পর্ক:
+                    <div className="bg-white/95 p-4 rounded-2xl border border-emerald-200 shadow-sm space-y-1.5">
+                      <span className="block text-xs font-bold text-slate-500">
+                        অভিভাবকের বিবরণ ও সম্পর্ক:
                       </span>
-                      <span className="text-sm font-bold text-slate-800 block">
-                        {currentRelation || 'পিতা / ভাই / অভিভাবক'}
+                      <span className="text-sm sm:text-base font-extrabold text-slate-800 block">
+                        {currentGuardian} ({currentRelation})
                       </span>
-                      <span className="text-xs text-slate-500 block mt-1">
-                        নাম: <strong>{currentGuardian || 'বায়োডাটা অনুমোদিত অভিভাবক'}</strong>
+                      <span className="text-xs text-slate-600 flex items-center gap-1 pt-1">
+                        <Clock className="h-3.5 w-3.5 text-slate-400" />
+                        <span>যোগাযোগের সেরা সময়: <strong>{contactInfo.timeToCall}</strong></span>
                       </span>
-                      <span className="inline-flex items-center gap-1 mt-2 text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
-                        <CheckCircle2 className="h-3 w-3" />
-                        সম্মতিপ্রাপ্ত অভিভাবক
+                      <span className="inline-flex items-center gap-1 mt-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
+                        <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
+                        OrdhekDeen ভেরিফাইড অভিভাবক
                       </span>
                     </div>
 
                     {/* Official Website Unlock & Share */}
-                    <div className="bg-white/90 p-4 rounded-2xl border border-emerald-100 shadow-xs sm:col-span-2 lg:col-span-1 flex flex-col justify-between">
+                    <div className="bg-white/95 p-4 rounded-2xl border border-emerald-200 shadow-sm sm:col-span-2 lg:col-span-1 flex flex-col justify-between">
                       <div>
                         <span className="block text-xs font-bold text-slate-500 mb-1">
                           অর্ধেকদ্বীন অফিসিয়াল লিঙ্ক:
@@ -787,10 +804,10 @@ _OrdhekDeen Leads Matchmaking Portal_`;
                           href={`https://ordhekdeen.com/biodata/${activeId}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex-1 text-center py-1.5 px-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1"
+                          className="flex-1 text-center py-2 px-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5"
                         >
-                          <span>OrdhekDeen লিঙ্ক</span>
-                          <ExternalLink className="h-3 w-3" />
+                          <span>OrdhekDeen পেজ ভিজিট</span>
+                          <ExternalLink className="h-3.5 w-3.5" />
                         </a>
                       </div>
                     </div>
