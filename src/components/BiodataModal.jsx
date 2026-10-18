@@ -29,6 +29,7 @@ import {
   getCandidateContact,
   getWhatsAppUrl
 } from '../constants';
+import { fetchBiodataDetail } from '../api';
 
 export default function BiodataModal({ 
   biodataNo, 
@@ -63,15 +64,14 @@ export default function BiodataModal({
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`/api/biodata/${biodataNo}`);
-        const json = await res.json();
-        if (json.success && json.data) {
-          setProfile(json.data);
+        const data = await fetchBiodataDetail(biodataNo);
+        if (data) {
+          setProfile(data);
         } else {
-          setError(json.error || 'Failed to fetch biodata details');
+          setError('Failed to fetch biodata details');
         }
       } catch (err) {
-        setError(err.message || 'Network error');
+        setError(err.message || 'Error fetching biodata details');
       } finally {
         setLoading(false);
       }

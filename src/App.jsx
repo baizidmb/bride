@@ -19,6 +19,8 @@ import {
   Table as TableIcon
 } from 'lucide-react';
 
+import { fetchLocations, fetchLeads, saveLead, deleteLead, searchBiodatas } from './api';
+
 export default function App() {
   const [currentTab, setCurrentTab] = useState('viewer'); // 'viewer' | 'saved' | 'explore'
   const [savedSubView, setSavedSubView] = useState('table'); // 'table' | 'kanban'
@@ -50,100 +52,39 @@ export default function App() {
 
   // 1. Load Locations on mount
   useEffect(() => {
-    async function loadLocations() {
-      try {
-        const res = await fetch('/api/locations');
-        const json = await res.json();
-        if (json.success && json.divisions) {
-          setLocations(json.divisions);
-        }
-      } catch (e) {
-        console.error('Failed to load locations:', e);
-      }
+    async function load() {
+      const divs = await fetchLocations();
+      setLocations(divs);
     }
-    loadLocations();
+    load();
   }, []);
 
-  // 2. Load Saved Leads from server
+  // 2. Load Saved Leads
   const loadLeads = useCallback(async () => {
-    try {
-      const res = await fetch('/api/leads');
-      const json = await res.json();
-      if (json.success && json.data) {
-        setLeads(json.data);
-      }
-    } catch (e) {
-      console.error('Failed to load leads:', e);
-    }
+    const list = await fetchLeads();
+    setLeads(list);
   }, []);
 
   useEffect(() => {
     loadLeads();
   }, [loadLeads]);
 
-  // 3. Search & Fetch Live Biodatas from OrdhekDeen API
+  // 3. Search & Fetch Live Biodatas from OrdhekDeen (with static offline fallback)
   const fetchLiveBiodatas = useCallback(async (page = 1, currentFilters = filters) => {
     setLoading(true);
     setError(null);
     try {
-      const apiFilters = {
-        biodata_type: ['female'], // Always filter for prospective brides
-      };
-
-      if (currentFilters.biodata_no) {
-        apiFilters.biodata_no = Number(currentFilters.biodata_no.trim());
+      const res = await searchBiodatas(page, 12, currentFilters);
+      const fetchedData = res.data || [];
+      setLiveBiodatas(fetchedData);
+      if (res.pagination) {
+        setPagination(res.pagination);
       }
-
-      if (currentFilters.marital_status && currentFilters.marital_status !== 'all') {
-        apiFilters.marital_status = [currentFilters.marital_status];
-      }
-
-      if (currentFilters.education_method && currentFilters.education_method !== 'all') {
-        apiFilters.education_method = [currentFilters.education_method];
-      }
-
-      if (currentFilters.district && currentFilters.district !== 'all') {
-        apiFilters.address = {
-          permanent: {
-            district: [currentFilters.district]
-          }
-        };
-      } else if (currentFilters.division && currentFilters.division !== 'all') {
-        apiFilters.address = {
-          permanent: {
-            division: [currentFilters.division]
-          }
-        };
-      }
-
-      if (currentFilters.min_age || currentFilters.max_age) {
-        apiFilters.age = {
-          min: Number(currentFilters.min_age) || 18,
-          max: Number(currentFilters.max_age) || 45,
-        };
-      }
-
-      const res = await fetch(`/api/search?page=${page}&limit=12`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filters: apiFilters }),
-      });
-
-      const json = await res.json();
-      if (json.success && json.data) {
-        const fetchedData = json.data.data || [];
-        setLiveBiodatas(fetchedData);
-        if (json.data.pagination) {
-          setPagination(json.data.pagination);
-        }
-        if (fetchedData.length > 0 && !activeBiodataNo) {
-          setActiveBiodataNo(fetchedData[0].biodata_no);
-        }
-      } else {
-        setError(json.error || 'Failed to fetch candidate biodatas');
+      if (fetchedData.length > 0 && !activeBiodataNo) {
+        setActiveBiodataNo(fetchedData[0].biodata_no);
       }
     } catch (err) {
-      setError(err.message || 'Error connecting to OrdhekDeen server');
+      setError(err.message || 'Error loading candidate biodatas');
     } finally {
       setLoading(false);
       setIsRefreshing(false);
@@ -184,24 +125,17 @@ export default function App() {
   // 4. Save/Update a Lead in CRM
   const handleSaveLead = async (leadData) => {
     try {
-      const res = await fetch('/api/leads', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(leadData),
+      const updated = await saveLead(leadData);
+      setLeads(prev => {
+        const idx = prev.findIndex(l => String(l.biodata_no) === String(leadData.biodata_no));
+        if (idx >= 0) {
+          const next = [...prev];
+          next[idx] = updated;
+          return next;
+        } else {
+          return [updated, ...prev];
+        }
       });
-      const json = await res.json();
-      if (json.success && json.lead) {
-        setLeads(prev => {
-          const idx = prev.findIndex(l => String(l.biodata_no) === String(leadData.biodata_no));
-          if (idx >= 0) {
-            const next = [...prev];
-            next[idx] = json.lead;
-            return next;
-          } else {
-            return [json.lead, ...prev];
-          }
-        });
-      }
     } catch (e) {
       console.error('Failed to save lead:', e);
     }
@@ -220,30 +154,24 @@ export default function App() {
     if (!window.confirm(`Are you sure you want to remove Lead #${biodataNo} from saved list?`)) {
       return;
     }
-    try {
-      const res = await fetch(`/api/leads/${biodataNo}`, { method: 'DELETE' });
-      const json = await res.json();
-      if (json.success) {
-        setLeads(prev => prev.filter(l => String(l.biodata_no) !== String(biodataNo)));
-      }
-    } catch (e) {
-      console.error('Failed to delete lead:', e);
-    }
+    await deleteLead(biodataNo);
+    setLeads(prev => prev.filter(l => String(l.biodata_no) !== String(biodataNo)));
   };
 
   // 7. Import Leads
   const handleImportLeads = async (importedList) => {
-    const res = await fetch('/api/leads/import', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ leads: importedList }),
-    });
-    const json = await res.json();
-    if (json.success) {
-      loadLeads();
-    } else {
-      throw new Error(json.error || 'Failed to import leads');
+    try {
+      await fetch('/api/leads/import', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ leads: importedList }),
+      });
+    } catch (_) {}
+
+    for (const lead of importedList) {
+      await saveLead(lead);
     }
+    await loadLeads();
   };
 
   const handleOpenViewerWithId = (id) => {

@@ -40,6 +40,7 @@ import {
   getCandidateContact,
   getWhatsAppUrl
 } from '../constants';
+import { fetchBiodataDetail } from '../api';
 
 export default function FullViewer({
   biodatas = [],
@@ -115,13 +116,12 @@ export default function FullViewer({
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`/api/biodata/${activeId}`);
-        const json = await res.json();
+        const data = await fetchBiodataDetail(activeId);
         if (!isCancelled) {
-          if (json.success && json.data) {
-            setProfile(json.data);
+          if (data) {
+            setProfile(data);
           } else {
-            setError(json.error || 'Failed to load biodata');
+            setError('Failed to load biodata profile');
           }
         }
       } catch (err) {

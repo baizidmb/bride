@@ -8,6 +8,7 @@ import {
   CheckCircle2, 
   AlertCircle 
 } from 'lucide-react';
+import { exportLeadsToCSV } from '../api';
 
 export default function ExportModal({ 
   leads, 
@@ -17,7 +18,7 @@ export default function ExportModal({
   const [importStatus, setImportStatus] = useState(null);
 
   const handleDownloadCSV = () => {
-    window.open('/api/leads/export/csv', '_blank');
+    exportLeadsToCSV(leads);
   };
 
   const handleDownloadJSON = () => {

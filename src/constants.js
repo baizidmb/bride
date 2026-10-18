@@ -57,6 +57,49 @@ export const LEAD_STATUSES = [
   },
 ];
 
+export const DIVISIONS = [
+  {
+    name: 'Dhaka',
+    bn: 'ঢাকা',
+    districts: ['Dhaka', 'Faridpur', 'Gazipur', 'Gopalganj', 'Kishoreganj', 'Madaripur', 'Manikganj', 'Munshiganj', 'Narayanganj', 'Narsingdi', 'Rajbari', 'Shariatpur', 'Tangail']
+  },
+  {
+    name: 'Chittagong',
+    bn: 'চট্টগ্রাম',
+    districts: ['Chittagong', 'Cox\'s Bazar', 'Cumilla', 'Brahmanbaria', 'Chandpur', 'Feni', 'Khagrachhari', 'Lakshmipur', 'Noakhali', 'Rangamati']
+  },
+  {
+    name: 'Rajshahi',
+    bn: 'রাজশাহী',
+    districts: ['Rajshahi', 'Bogura', 'Joypurhat', 'Naogaon', 'Natore', 'Chapai Nawabganj', 'Pabna', 'Sirajganj']
+  },
+  {
+    name: 'Khulna',
+    bn: 'খুলনা',
+    districts: ['Khulna', 'Bagerhat', 'Chuadanga', 'Jashore', 'Jhenaidah', 'Kushtia', 'Magura', 'Meherpur', 'Narail', 'Satkhira']
+  },
+  {
+    name: 'Barisal',
+    bn: 'বরিশাল',
+    districts: ['Barisal', 'Barguna', 'Bhola', 'Jhalokati', 'Patuakhali', 'Pirojpur']
+  },
+  {
+    name: 'Sylhet',
+    bn: 'সিলেট',
+    districts: ['Sylhet', 'Habiganj', 'Moulvibazar', 'Sunamganj']
+  },
+  {
+    name: 'Rangpur',
+    bn: 'রংপুর',
+    districts: ['Rangpur', 'Dinajpur', 'Gaibandha', 'Kurigram', 'Lalmonirhat', 'Nilphamari', 'Panchagarh', 'Thakurgaon']
+  },
+  {
+    name: 'Mymensingh',
+    bn: 'ময়মনসিংহ',
+    districts: ['Mymensingh', 'Jamalpur', 'Netrokona', 'Sherpur']
+  }
+];
+
 export const MARITAL_STATUS_OPTIONS = [
   { value: 'all', label: 'All Marital Statuses', bn: 'সকল বৈবাহিক অবস্থা' },
   { value: 'never_married', label: 'Never Married', bn: 'অবিবাহিত' },
