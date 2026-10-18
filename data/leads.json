@@ -1,0 +1,20 @@
+[
+  {
+    "biodata_no": 24590,
+    "status": "shortlisted",
+    "rating": 5,
+    "notes": "Highly educated, religious family in Dhaka. Follow up next week.",
+    "tags": [
+      "Dhaka",
+      "Alia",
+      "Priority"
+    ],
+    "contact_info": {
+      "name": "Father",
+      "phone": "01712345678",
+      "relation": "Father"
+    },
+    "created_at": "2026-10-17T23:46:17.125Z",
+    "updated_at": "2026-10-18T05:54:37.280Z"
+  }
+]

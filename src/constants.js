@@ -1,0 +1,156 @@
+export const LEAD_STATUSES = [
+  {
+    id: 'discovered',
+    label: 'Discovered',
+    bnLabel: 'নতুন দেখা',
+    color: 'bg-slate-100 text-slate-700 border-slate-200',
+    badgeColor: 'bg-slate-500',
+    icon: 'Sparkles',
+  },
+  {
+    id: 'shortlisted',
+    label: 'Shortlisted',
+    bnLabel: 'শর্টলিস্টেড',
+    color: 'bg-amber-50 text-amber-700 border-amber-200',
+    badgeColor: 'bg-amber-500',
+    icon: 'Star',
+  },
+  {
+    id: 'family_review',
+    label: 'Family Review',
+    bnLabel: 'পারিবারিক আলোচনা',
+    color: 'bg-purple-50 text-purple-700 border-purple-200',
+    badgeColor: 'bg-purple-500',
+    icon: 'MessageSquare',
+  },
+  {
+    id: 'contacted',
+    label: 'Contacted Guardian',
+    bnLabel: 'অভিভাবকের সাথে কথা',
+    color: 'bg-blue-50 text-blue-700 border-blue-200',
+    badgeColor: 'bg-blue-500',
+    icon: 'PhoneCall',
+  },
+  {
+    id: 'meeting',
+    label: 'Meeting / Proposal',
+    bnLabel: 'সাক্ষাৎ / প্রস্তাব',
+    color: 'bg-teal-50 text-teal-700 border-teal-200',
+    badgeColor: 'bg-teal-500',
+    icon: 'Calendar',
+  },
+  {
+    id: 'proceeding',
+    label: 'Finalizing / Matched',
+    bnLabel: 'চূড়ান্ত অগ্রগতি',
+    color: 'bg-emerald-50 text-emerald-800 border-emerald-300 font-semibold',
+    badgeColor: 'bg-emerald-600',
+    icon: 'HeartHandshake',
+  },
+  {
+    id: 'declined',
+    label: 'Not Suitable',
+    bnLabel: 'উপযুক্ত নয়',
+    color: 'bg-rose-50 text-rose-700 border-rose-200',
+    badgeColor: 'bg-rose-500',
+    icon: 'XCircle',
+  },
+];
+
+export const MARITAL_STATUS_OPTIONS = [
+  { value: 'all', label: 'All Marital Statuses', bn: 'সকল বৈবাহিক অবস্থা' },
+  { value: 'never_married', label: 'Never Married', bn: 'অবিবাহিত' },
+  { value: 'divorced', label: 'Divorced', bn: 'ডিভোর্সড' },
+  { value: 'widow', label: 'Widow', bn: 'বিধবা' },
+];
+
+export const EDUCATION_METHOD_OPTIONS = [
+  { value: 'all', label: 'All Education Mediums', bn: 'সকল মাধ্যম' },
+  { value: 'general', label: 'General Education', bn: 'জেনারেল' },
+  { value: 'alia', label: 'Govt. Madrasa (Alia)', bn: 'সরকারী মাদ্রাসা (আলিয়া)' },
+  { value: 'qawmi', label: 'Private Madrasa (Qawmi)', bn: 'বেসরকারী মাদ্রাসা (কওমী)' },
+];
+
+export function getStatusMeta(statusId) {
+  return LEAD_STATUSES.find(s => s.id === statusId) || LEAD_STATUSES[0];
+}
+
+// Extract string value safely from any OrdhekDeen nested field
+export function formatFieldText(field, lang = 'bn') {
+  if (field === null || field === undefined) return '';
+  if (typeof field === 'string' || typeof field === 'number') return String(field);
+  
+  if (typeof field === 'object') {
+    // If it's an array
+    if (Array.isArray(field)) {
+      return field.map(x => formatFieldText(x, lang)).join(', ');
+    }
+    // If it has .value property
+    const val = field.value !== undefined ? field.value : field;
+    if (typeof val === 'object' && val !== null) {
+      return val[lang] || val.bn || val.en || Object.values(val)[0] || '';
+    }
+    return String(val ?? '');
+  }
+  return String(field);
+}
+
+export function formatAge(ageObj) {
+  if (!ageObj) return 'N/A';
+  if (typeof ageObj === 'object') {
+    const val = ageObj.value !== undefined ? ageObj.value : ageObj;
+    if (typeof val === 'object' && val !== null) {
+      return String(val.en || val.bn || 'N/A');
+    }
+    return String(val || 'N/A');
+  }
+  return String(ageObj);
+}
+
+export function formatMaritalStatus(statusObj) {
+  if (!statusObj) return 'N/A';
+  if (typeof statusObj === 'object') {
+    const val = statusObj.value !== undefined ? statusObj.value : statusObj;
+    if (typeof val === 'object' && val !== null) {
+      return val.bn || val.en || 'N/A';
+    }
+    return String(val || 'N/A');
+  }
+  return String(statusObj);
+}
+
+export function formatOccupation(occ) {
+  if (!occ) return 'Not specified';
+  const text = formatFieldText(occ, 'bn') || formatFieldText(occ, 'en');
+  return text || 'Not specified';
+}
+
+export function formatHeight(h) {
+  if (!h) return 'N/A';
+  return formatFieldText(h, 'bn') || formatFieldText(h, 'en') || 'N/A';
+}
+
+export function formatComplexion(c) {
+  if (!c) return 'N/A';
+  return formatFieldText(c, 'bn') || formatFieldText(c, 'en') || 'N/A';
+}
+
+export function formatLocation(addr) {
+  if (!addr) return 'Bangladesh';
+  if (typeof addr === 'string') return addr;
+
+  // If it has { label, value: { en: ..., bn: ... } }
+  if (addr.value !== undefined) {
+    if (typeof addr.value === 'object' && addr.value !== null) {
+      return addr.value.bn || addr.value.en || 'Bangladesh';
+    }
+    return String(addr.value || 'Bangladesh');
+  }
+
+  const perm = addr.permanent || addr.perm_address || addr;
+  const parts = [];
+  if (perm.upazila) parts.push(typeof perm.upazila === 'object' ? formatFieldText(perm.upazila) : perm.upazila);
+  if (perm.district) parts.push(typeof perm.district === 'object' ? formatFieldText(perm.district) : perm.district);
+  if (perm.division && parts.length < 2) parts.push(typeof perm.division === 'object' ? formatFieldText(perm.division) : perm.division);
+  return parts.length > 0 ? parts.join(', ') : 'Bangladesh';
+}
