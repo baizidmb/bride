@@ -155,13 +155,73 @@ export function formatLocation(addr) {
   return parts.length > 0 ? parts.join(', ') : 'Bangladesh';
 }
 
+export const BRIDE_NAMES = [
+  { bn: 'নুসরাত জাহান', en: 'Nusrat Jahan' },
+  { bn: 'সুমাইয়া আক্তার', en: 'Sumaiya Akter' },
+  { bn: 'ফাতিমা তুয যোহরা', en: 'Fatima Tuz Zohra' },
+  { bn: 'মারিয়া তাসনিম', en: 'Maria Tasnim' },
+  { bn: 'সাদিয়া ইসলাম', en: 'Sadia Islam' },
+  { bn: 'আফসানা রহমান', en: 'Afsana Rahman' },
+  { bn: 'জান্নাতুল মাওয়া', en: 'Jannatul Mawa' },
+  { bn: 'তাসফিয়া তাবাসসুম', en: 'Tasfia Tabassum' },
+  { bn: 'উম্মে কুলসুম', en: 'Umme Kulsum' },
+  { bn: 'আমিনা খানম', en: 'Amina Khanam' },
+  { bn: 'নাজিয়া ফেরদৌস', en: 'Nazia Ferdous' },
+  { bn: 'মেহজাবিন চৌধুরী', en: 'Mehjabin Chowdhury' },
+  { bn: 'তানজিলা হক', en: 'Tanzila Haque' },
+  { bn: 'রুমানা আক্তার', en: 'Rumana Akter' },
+  { bn: 'রাবেয়া বসরী', en: 'Rabeya Bosri' },
+  { bn: 'আয়েশা সিদ্দিকা', en: 'Ayesha Siddika' },
+  { bn: 'সামিয়া পারভীন', en: 'Samia Parvin' },
+  { bn: 'খাদিজা আক্তার', en: 'Khadija Akter' },
+  { bn: 'নাজমুন নাহার', en: 'Najmun Nahar' },
+  { bn: 'ফারজানা ববি', en: 'Farzana Boby' },
+  { bn: 'ইসরাত জাহান', en: 'Israt Jahan' },
+  { bn: 'তাহমিনা আক্তার', en: 'Tahmina Akter' },
+  { bn: 'মুনতাহা ইসলাম', en: 'Muntaha Islam' },
+  { bn: 'সাবরিনা সুলতানা', en: 'Sabrina Sultana' },
+  { bn: 'জাকিয়া সুলতানা', en: 'Zakia Sultana' },
+  { bn: 'রোকেয়া খাতুন', en: 'Rokeya Khatun' },
+  { bn: 'আসমাতুন নেসা', en: 'Asmatun Nesa' },
+  { bn: 'মুমতাহিনা রহমান', en: 'Mumtahina Rahman' },
+  { bn: 'নুজহাত তাবাসসুম', en: 'Nuzhat Tabassum' },
+  { bn: 'ফারহানা ইসলাম', en: 'Farhana Islam' },
+  { bn: 'রিফাত সুলতানা', en: 'Rifat Sultana' },
+  { bn: 'মাহবুবা আক্তার', en: 'Mahbuba Akter' },
+  { bn: 'শাহনাজ পারভীন', en: 'Shahnaz Parvin' },
+  { bn: 'হোসনে আরা বেগম', en: 'Hosne Ara Begum' },
+  { bn: 'শারমিন আক্তার', en: 'Sharmin Akter' },
+  { bn: 'সায়মা সাদিয়া', en: 'Sayma Sadia' }
+];
+
+export function getBrideName(biodataNo, leadData = null) {
+  if (leadData?.candidate_name) {
+    return {
+      bn: leadData.candidate_name,
+      en: leadData.candidate_name_en || leadData.candidate_name,
+      isCustom: true
+    };
+  }
+  const bNo = Number(biodataNo) || 12345;
+  const index = Math.abs((bNo * 13) % BRIDE_NAMES.length);
+  return {
+    ...BRIDE_NAMES[index],
+    isCustom: false
+  };
+}
+
 export function getCandidateContact(biodataNo, leadData = null, profile = null) {
+  const bride = getBrideName(biodataNo, leadData);
+
   if (leadData?.contact_info?.phone) {
     return {
+      brideName: bride.bn,
+      brideNameEn: bride.en,
       phone: leadData.contact_info.phone,
       name: leadData.contact_info.name || 'অভিভাবক',
       relation: leadData.contact_info.relation || 'পিতা',
       timeToCall: leadData.contact_info.timeToCall || 'সকাল ১০:০০ - রাত ৯:০০',
+      email: leadData.contact_info.email || `bride.${biodataNo}@ordhekdeen.contact`,
       isCustom: true
     };
   }
@@ -187,17 +247,22 @@ export function getCandidateContact(biodataNo, leadData = null, profile = null) 
   }
 
   return {
+    brideName: bride.bn,
+    brideNameEn: bride.en,
     phone,
     name,
     relation,
     timeToCall: 'সকাল ১০:০০ - রাত ৯:০০',
+    email: `bride.${biodataNo}@ordhekdeen.contact`,
     isCustom: false
   };
 }
 
-export function getWhatsAppUrl(phone, biodataNo) {
+export function getWhatsAppUrl(phone, biodataNo, brideName = '') {
   const cleanPhone = String(phone).replace(/[^0-9]/g, '').replace(/^0/, '880');
-  const message = encodeURIComponent(`আসসালামু আলাইকুম। আমি অর্ধেকদ্বীন ওয়েবসাইটে আপনাদের পাত্রী বায়োডাটা নং #${biodataNo} দেখে সরাসরি অভিভাবকের সাথে কথা বলার জন্য নক করছি।`);
+  const greeting = brideName ? `আসসালামু আলাইকুম। আমি অর্ধেকদ্বীন ওয়েবসাইটে পাত্রী ${brideName} (বায়োডাটা নং #${biodataNo}) এর অভিভাবকের সাথে কথা বলার জন্য নক করছি।` : `আসসালামু আলাইকুম। আমি অর্ধেকদ্বীন ওয়েবসাইটে আপনাদের পাত্রী বায়োডাটা নং #${biodataNo} দেখে সরাসরি অভিভাবকের সাথে কথা বলার জন্য নক করছি।`;
+  const message = encodeURIComponent(greeting);
   return `https://wa.me/${cleanPhone}?text=${message}`;
 }
+
 

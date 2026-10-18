@@ -41,14 +41,20 @@ export default function TableView({
     const occ = formatOccupation(l.occupation);
     const loc = formatLocation(l.address);
     const notesStr = typeof l.notes === 'string' ? l.notes : '';
-    const phone = l.contact_info?.phone || '';
+    const contact = getCandidateContact(l.biodata_no, l);
+    const phone = contact.phone || '';
+    const brideNameBn = contact.brideName || '';
+    const brideNameEn = contact.brideNameEn || '';
 
+    const term = searchTerm.toLowerCase();
     const matchesSearch = 
-      String(l.biodata_no).includes(searchTerm) ||
-      phone.includes(searchTerm) ||
-      occ.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      notesStr.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      loc.toLowerCase().includes(searchTerm.toLowerCase());
+      String(l.biodata_no).includes(term) ||
+      phone.includes(term) ||
+      brideNameBn.toLowerCase().includes(term) ||
+      brideNameEn.toLowerCase().includes(term) ||
+      occ.toLowerCase().includes(term) ||
+      notesStr.toLowerCase().includes(term) ||
+      loc.toLowerCase().includes(term);
 
     const matchesStatus = statusFilter === 'all' || l.status === statusFilter;
 
@@ -144,18 +150,29 @@ export default function TableView({
 
             return (
               <div key={lead.biodata_no} className="p-4 space-y-3 bg-white hover:bg-slate-50/50">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono font-black text-sm text-slate-900 bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">
+                <div className="flex items-start justify-between gap-1">
+                  <div>
+                    <h3 className="font-extrabold text-sm text-slate-900">
+                      {contact.brideName}
+                    </h3>
+                    <p className="text-[10px] text-slate-400 font-semibold">
+                      {contact.brideNameEn}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-mono font-black text-xs text-slate-900 bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">
                       #{lead.biodata_no}
                     </span>
-                    <span className="text-xs font-bold text-slate-700">{age} বছর</span>
-                    <span className="text-[11px] text-slate-400">• {marital}</span>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${statusMeta.color}`}>
+                      {statusMeta.label}
+                    </span>
                   </div>
+                </div>
 
-                  <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${statusMeta.color}`}>
-                    {statusMeta.label}
-                  </span>
+                <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
+                  <span>{age} বছর</span>
+                  <span className="text-slate-300">•</span>
+                  <span className="text-slate-500 font-medium">{marital}</span>
                 </div>
 
                 <div className="text-xs text-slate-600 space-y-0.5">
@@ -182,7 +199,7 @@ export default function TableView({
                       <PhoneCall className="h-3.5 w-3.5" />
                     </a>
                     <a
-                      href={getWhatsAppUrl(phone, lead.biodata_no)}
+                      href={getWhatsAppUrl(phone, lead.biodata_no, contact.brideName)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-1.5 rounded-lg bg-green-500 text-white shadow-xs"
@@ -244,6 +261,7 @@ export default function TableView({
           <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase text-[11px]">
             <tr>
               <th className="py-3 px-4">আইডি</th>
+              <th className="py-3 px-3">পাত্রীর নাম</th>
               <th className="py-3 px-3">স্ট্যাটাস</th>
               <th className="py-3 px-3">যোগাযোগের নম্বর</th>
               <th className="py-3 px-3">রেটিং</th>
@@ -256,7 +274,7 @@ export default function TableView({
           <tbody className="divide-y divide-slate-100">
             {filteredLeads.length === 0 ? (
               <tr>
-                <td colSpan="8" className="py-12 text-center text-xs text-slate-400 italic">
+                <td colSpan="9" className="py-12 text-center text-xs text-slate-400 italic">
                   {leads.length === 0
                     ? 'এখনও কোনো পাত্রী সংরক্ষণ করা হয়নি। বায়োডাটা ভিউয়ারে গিয়ে শর্টলিস্ট করুন।'
                     : 'অনুসন্ধানের সাথে কোনো পাত্রী মেলেনি।'}
@@ -281,6 +299,21 @@ export default function TableView({
                         className="hover:text-brand-600 hover:underline flex items-center gap-1"
                       >
                         <span>#{lead.biodata_no}</span>
+                      </button>
+                    </td>
+
+                    {/* Bride's Name */}
+                    <td className="py-3 px-3">
+                      <button
+                        onClick={() => onViewDetails(lead.biodata_no)}
+                        className="text-left group"
+                      >
+                        <span className="font-black text-xs sm:text-sm text-slate-900 group-hover:text-brand-600 transition-colors block">
+                          {contact.brideName}
+                        </span>
+                        <span className="text-[11px] text-slate-400 font-semibold block">
+                          {contact.brideNameEn}
+                        </span>
                       </button>
                     </td>
 
@@ -337,7 +370,7 @@ export default function TableView({
                             <PhoneCall className="h-3.5 w-3.5" />
                           </a>
                           <a
-                            href={getWhatsAppUrl(phone, lead.biodata_no)}
+                            href={getWhatsAppUrl(phone, lead.biodata_no, contact.brideName)}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="p-1 rounded bg-green-50 text-green-700 hover:bg-green-100"

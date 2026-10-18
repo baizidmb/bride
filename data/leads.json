@@ -1,1 +1,888 @@
-[]
+[
+  {
+    "user_id": 187628,
+    "biodata_no": 36062,
+    "profile_status": "APPROVED",
+    "address": {
+      "gp": {
+        "k": "address",
+        "en": "Address",
+        "bn": "ঠিকানা"
+      },
+      "fs": [
+        {
+          "fn": {
+            "en": "Permanent Address",
+            "bn": "স্থায়ী ঠিকানা"
+          },
+          "k": "permanent_address",
+          "v": "kushtia_sadar, kushtia, khulna, bangladesh",
+          "vi": 1,
+          "fv": {
+            "en": "Kushtia Sadar, Kushtia, Khulna, Bangladesh",
+            "bn": "কুষ্টিয়া সদর, কুষ্টিয়া, খুলনা, বাংলাদেশ"
+          },
+          "area": {
+            "label": {
+              "en": "Area Name",
+              "bn": "এলাকার নাম"
+            },
+            "value": "Abdalpur, Hatia Abdalpur"
+          }
+        },
+        {
+          "fn": {
+            "en": "Present Address",
+            "bn": "বর্তমান ঠিকানা"
+          },
+          "k": "present_address",
+          "v": "pabna_sadar, pabna, rajshahi, bangladesh",
+          "vi": 1,
+          "fv": {
+            "en": "Pabna Sadar, Pabna, Rajshahi, Bangladesh",
+            "bn": "পাবনা সদর, পাবনা, রাজশাহী, বাংলাদেশ"
+          },
+          "area": {
+            "label": {
+              "en": "Area Name",
+              "bn": "এলাকার নাম"
+            },
+            "value": "Monsurabat residential area"
+          }
+        },
+        {
+          "fn": {
+            "en": "Where did you grow up?",
+            "bn": "কোথায় বড় হয়েছেন?"
+          },
+          "k": "grew_up_location",
+          "v": "Kushtia",
+          "vi": 1
+        }
+      ]
+    },
+    "pledge": {
+      "gp": {
+        "k": "pledge",
+        "en": "Pledge",
+        "bn": "অঙ্গীকারনামা"
+      },
+      "fs": [
+        {
+          "fn": {
+            "en": "Do your parents know that you are submitting biodata to the OrdhekDeen.com website?",
+            "bn": "OrdhekDeen.com ওয়েবসাইটে বায়োডাটা জমা দিচ্ছেন, তা আপনার অভিভাবক জানেন?"
+          },
+          "k": "od_parents_consent",
+          "v": "yes",
+          "vi": 1,
+          "fv": {
+            "en": "Yes",
+            "bn": "হ্যাঁ"
+          }
+        },
+        {
+          "fn": {
+            "en": "By Allah, testify that all the information given is true.",
+            "bn": "আল্লাহ'র শপথ করে সাক্ষ্য দিন, যে তথ্যগুলো দিয়েছেন সব সত্য?"
+          },
+          "k": "info_truthfulness",
+          "v": "yes",
+          "vi": 1,
+          "fv": {
+            "en": "Yes",
+            "bn": "হ্যাঁ"
+          }
+        },
+        {
+          "fn": {
+            "en": "If you provide any false information, OrdhekDeen.com will not take any responsibility for the conventional law and the hereafter. Do you agree?",
+            "bn": "কোনো মিথ্যা তথ্য প্রদান করলে দুনিয়াবী আইনগত এবং আখিরাতের দায়ভার OrdhekDeen.com কর্তৃপক্ষ নিবে না। আপনি কি সম্মত?"
+          },
+          "k": "accept_responsibility",
+          "v": "yes",
+          "vi": 1,
+          "fv": {
+            "en": "Yes",
+            "bn": "হ্যাঁ"
+          }
+        }
+      ]
+    },
+    "approved_by": 161109,
+    "general-info": {
+      "gp": {
+        "k": "general_info",
+        "en": "General Info",
+        "bn": "সাধারণ তথ্য"
+      },
+      "fs": [
+        {
+          "fn": {
+            "en": "Biodata Type",
+            "bn": "বায়োডাটার ধরন"
+          },
+          "k": "biodata_type",
+          "v": "female",
+          "vi": 1,
+          "fv": {
+            "en": "Female's Biodata",
+            "bn": "পাত্রীর বায়োডাটা"
+          }
+        },
+        {
+          "fn": {
+            "en": "Marital Status",
+            "bn": "বৈবাহিক অবস্থা"
+          },
+          "k": "marital_status",
+          "v": "never_married",
+          "vi": 1,
+          "fv": {
+            "en": "Never Married",
+            "bn": "অবিবাহিত"
+          }
+        },
+        {
+          "fn": {
+            "en": "Birth Year",
+            "bn": "জন্মসন"
+          },
+          "k": "birth_year",
+          "v": "1993-04-14 00:00:00",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Complexion",
+            "bn": "গাত্রবর্ণ"
+          },
+          "k": "complexion",
+          "v": "fair",
+          "vi": 1,
+          "fv": {
+            "en": "Fair",
+            "bn": "ফর্সা"
+          }
+        },
+        {
+          "fn": {
+            "en": "Height",
+            "bn": "উচ্চতা"
+          },
+          "k": "height",
+          "v": "61",
+          "vi": 1,
+          "fv": {
+            "en": "5′ 1″",
+            "bn": "৫′ ১″"
+          }
+        },
+        {
+          "fn": {
+            "en": "Weight",
+            "bn": "ওজন"
+          },
+          "k": "weight",
+          "v": "55",
+          "vi": 1,
+          "fv": {
+            "en": "55 kg",
+            "bn": "৫৫ কেজি"
+          }
+        },
+        {
+          "fn": {
+            "en": "Blood Group",
+            "bn": "রক্তের গ্রুপ"
+          },
+          "k": "blood_group",
+          "v": "O+",
+          "vi": 1,
+          "fv": {
+            "en": "O+",
+            "bn": "O+"
+          }
+        },
+        {
+          "fn": {
+            "en": "Nationality",
+            "bn": "জাতীয়তা"
+          },
+          "k": "nationality",
+          "v": "bangladeshi",
+          "vi": 1,
+          "fv": {
+            "en": "Bangladeshi",
+            "bn": "বাংলাদেশী"
+          }
+        }
+      ]
+    },
+    "educational-qualifications": {
+      "gp": {
+        "k": "educational_qualifications",
+        "en": "Educational Qualifications",
+        "bn": "শিক্ষাগত যোগ্যতা"
+      },
+      "fs": [
+        {
+          "fn": {
+            "en": "Your Education Method",
+            "bn": "আপনার শিক্ষা মাধ্যম"
+          },
+          "k": "education_method",
+          "v": "general",
+          "vi": 1,
+          "fv": {
+            "en": "General",
+            "bn": "জেনারেল"
+          }
+        },
+        {
+          "fn": {
+            "en": "SSC / Dakhil / Equivalent Passing year",
+            "bn": "এস.এস.সি / দাখিল / সমমান পাসের সন"
+          },
+          "k": "ssc_passing_year",
+          "v": "2007 (আমার খালু প্রাইমারি স্কুলের প্রধান শিক্ষক হওয়ায় এবং পড়াশোনা আলহামদুলিল্লাহ ভালো পারায়,আমাকে শুরুতেই দ্বিতীয় শ্রেণীতে ভর্তি করানো হয় ,যে কারনে আমার বয়সীরা ২০০৯ এসএসসি দিয়েছে)",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Group",
+            "bn": "বিভাগ"
+          },
+          "k": "ssc_group",
+          "v": "commerce",
+          "vi": 1,
+          "fv": {
+            "en": "Commerce",
+            "bn": "ব্যবসা বিভাগ"
+          }
+        },
+        {
+          "fn": {
+            "en": "Result",
+            "bn": "ফলাফল"
+          },
+          "k": "ssc_result",
+          "v": "a_plus",
+          "vi": 1,
+          "fv": {
+            "en": "A+",
+            "bn": "A+"
+          }
+        },
+        {
+          "fn": {
+            "en": "HSC / Alim / Equivalent passing year",
+            "bn": "এইচ.এস.সি / আলিম / সমমান পাসের সন"
+          },
+          "k": "hsc_alim_equivalent_pass_year",
+          "v": "2009",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Group",
+            "bn": "বিভাগ"
+          },
+          "k": "hsc_alim_equivalent_group",
+          "v": "commerce",
+          "vi": 1,
+          "fv": {
+            "en": "Commerce",
+            "bn": "ব্যবসা বিভাগ"
+          }
+        },
+        {
+          "fn": {
+            "en": "Result",
+            "bn": "ফলাফল"
+          },
+          "k": "hsc_alim_equivalent_result",
+          "v": "a_plus",
+          "vi": 1,
+          "fv": {
+            "en": "A+",
+            "bn": "A+"
+          }
+        },
+        {
+          "fn": {
+            "en": "Graduation subject of study",
+            "bn": "স্নাতক / স্নাতক (সম্মান) / ফাজিল অধ্যয়নের বিষয়"
+          },
+          "k": "graduation_subject",
+          "v": "Economics",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Name of educational institution",
+            "bn": "শিক্ষাপ্রতিষ্ঠানের নাম"
+          },
+          "k": "graduation_institution_name",
+          "v": "Rajshahi University",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Passing year",
+            "bn": "পাসের সন"
+          },
+          "k": "graduation_passing_year",
+          "v": "2015",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Postgraduation subject of study",
+            "bn": "স্নাতকোত্তর / কামিল অধ্যয়নের বিষয়"
+          },
+          "k": "postgraduate_subject",
+          "v": "Economics",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Name of educational institution",
+            "bn": "শিক্ষাপ্রতিষ্ঠানের নাম"
+          },
+          "k": "postgraduate_institution_name",
+          "v": "Rajshahi University",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Passing year",
+            "bn": "পাসের সন"
+          },
+          "k": "postgraduate_passing_year",
+          "v": "2017",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Other educational qualifications",
+            "bn": "অন্যান্য শিক্ষাগত যোগ্যতা"
+          },
+          "k": "other_education_details",
+          "v": "Mphil student...",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Islamic educational titles",
+            "bn": "দ্বীনি শিক্ষাগত পদবী সমূহ"
+          },
+          "k": "islamic_educational_titles",
+          "v": null,
+          "vi": 1
+        }
+      ]
+    },
+    "family-information": {
+      "gp": {
+        "k": "family_information",
+        "en": "Family Information",
+        "bn": "পারিবারিক তথ্য"
+      },
+      "fs": [
+        {
+          "fn": {
+            "en": "Is your father alive?",
+            "bn": "আপনার পিতা কি জীবিত?"
+          },
+          "k": "is_father_alive",
+          "v": "yes_alive",
+          "vi": 1,
+          "fv": {
+            "en": "Yes, alive",
+            "bn": "জী, জীবিত"
+          }
+        },
+        {
+          "fn": {
+            "en": "Description of father's profession",
+            "bn": "পিতার পেশার বিবরণ"
+          },
+          "k": "fathers_profession",
+          "v": "He doesn't do anything now, but in the past he used to take care of my grandfather's land with people and did business of agri. products.",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Is your mother alive?",
+            "bn": "আপনার মাতা কি জীবিত?"
+          },
+          "k": "is_mother_alive",
+          "v": "yes_alive",
+          "vi": 1,
+          "fv": {
+            "en": "Yes, alive",
+            "bn": "জী, জীবিত"
+          }
+        },
+        {
+          "fn": {
+            "en": "Description of mother's profession",
+            "bn": "মাতার পেশার বিবরণ"
+          },
+          "k": "mothers_profession",
+          "v": "Homemaker",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "How many brothers do you have?",
+            "bn": "আপনার কতজন ভাই আছে?"
+          },
+          "k": "number_of_brothers",
+          "v": "1",
+          "vi": 1,
+          "fv": {
+            "en": "1",
+            "bn": "১"
+          }
+        },
+        {
+          "fn": {
+            "en": "Brothers information",
+            "bn": "ভাইদের তথ্য"
+          },
+          "k": "brothers_info",
+          "v": "After completed Graduation now stay in abroad also a married person.",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "How many sisters do you have?",
+            "bn": "আপনার কতজন বোন আছে?"
+          },
+          "k": "number_of_sisters",
+          "v": "1",
+          "vi": 1,
+          "fv": {
+            "en": "1",
+            "bn": "১"
+          }
+        },
+        {
+          "fn": {
+            "en": "Sisters information",
+            "bn": "বোনদের তথ্য"
+          },
+          "k": "sisters_info",
+          "v": "After completed Graduation now stay Dhanmondi with own spouse's family",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Profession of uncles",
+            "bn": "চাচা মামাদের পেশা"
+          },
+          "k": "uncles_profession",
+          "v": null,
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Family financial status",
+            "bn": "পারিবারিক অর্থনৈতিক অবস্থা"
+          },
+          "k": "family_financial_status",
+          "v": "middle_class",
+          "vi": 1,
+          "fv": {
+            "en": "Middle class",
+            "bn": "মধ্যবিত্ত"
+          }
+        },
+        {
+          "fn": {
+            "en": "Type of current and own house",
+            "bn": "বর্তমান বাড়ি ও নিজস্ব বাড়ির ধরণ"
+          },
+          "k": "accommodation_type",
+          "v": "The village house is a two-story house, My parents live in our two-story village house, and the house in Kushtia city is rented out and is where a madrasa is being run.",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Details of Family Land, Business, or Other Assets",
+            "bn": "পারিবারিক জমিজমা, ব্যবসা বা অন্যান্য সম্পদের বিবরণ"
+          },
+          "k": "family_financial_description",
+          "v": "2peach of  land has been purchase in Dhaka Shared with others and have own transportation system, (a car as well).also has two shops in the upazila new market and My grandparents have their own land which is being rented out .Alhamdulillah for everything...",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "How is your family's religious condition?",
+            "bn": "পারিবারিক দ্বীনি পরিবেশ কেমন?"
+          },
+          "k": "family_religious_condition",
+          "v": "The entire family prays five times a day and tries their best to follow the religious environment, making a considerable effort to respect the Mahram.",
+          "vi": 1
+        }
+      ]
+    },
+    "personal-information": {
+      "gp": {
+        "k": "personal_information",
+        "en": "Personal Information",
+        "bn": "ব্যক্তিগত তথ্য"
+      },
+      "fs": [
+        {
+          "fn": {
+            "en": "What kind of clothes do you usually wear outside the house?",
+            "bn": "ঘরের বাহিরে সাধারণত কি ধরণের পোশাক পরেন?"
+          },
+          "k": "outside_dress",
+          "v": "Wear burqa, hijab and neckerchief when going outside, ",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Since when have you been wearing a veil with a niqab?",
+            "bn": "কবে থেকে নিকাব সহ পর্দা করছেন?"
+          },
+          "k": "niqab_since",
+          "v": "Since 2016, about 10 years ",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Do you pray five times a day? Since when?",
+            "bn": "প্রতিদিন পাঁচ ওয়াক্ত নামাজ পড়েন কি? কবে থেকে পড়ছেন?"
+          },
+          "k": "prayer_details",
+          "v": "Yes,since 1999 .  Alhamdulillah, I have been praying five times a day regularly for the past 25 years. ",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Usually how many times(waqt) a week are your prayers missed(Qaza)?",
+            "bn": "সাধারণত সপ্তাহে কত ওয়াক্ত নামায আপনার কাযা হয়?"
+          },
+          "k": "missed_prayers_weekly",
+          "v": "Rear case, (1/2 sometimes when travel)",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Do you comply with mahram / non-mahram?",
+            "bn": "মাহরাম/নন-মাহরাম মেনে চলেন কি?"
+          },
+          "k": "maintain_mahram",
+          "v": "Yes, try my best",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Are you able to recite the Quran correctly?",
+            "bn": "শুদ্ধভাবে কুরআন তিলওয়াত করতে পারেন?"
+          },
+          "k": "can_recite_quran",
+          "v": "Yes , Alhamdulillah",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Which Fiqh do you follow?",
+            "bn": "কোন ফিকহ অনুসরণ করেন?"
+          },
+          "k": "followed_fiqh",
+          "v": "hanafi",
+          "vi": 1,
+          "fv": {
+            "en": "Hanafi",
+            "bn": "হানাফি"
+          }
+        },
+        {
+          "fn": {
+            "en": "Do you watch or listen to dramas / movies / serials / songs?",
+            "bn": "নাটক / সিনেমা / সিরিয়াল / গান এসব দেখেন বা শুনেন?"
+          },
+          "k": "watch_movies_dramas",
+          "v": "Not usually seen, used to listening to various Islamic discussions",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Do you have any mental or physical diseases?",
+            "bn": "আপনার মানসিক বা শারীরিক কোনো রোগ আছে?"
+          },
+          "k": "has_diseases",
+          "v": "No , Alhamdulillah I am absolutely fine...",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Are you involved in any special work of deen?",
+            "bn": "দ্বীনের কোন বিশেষ মেহনতে যুক্ত আছেন?"
+          },
+          "k": "religious_involvement",
+          "v": "I try to teach the mothers and sisters around the house how to pray and wear the veil.",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "What are your ideas or beliefs about the shrine(Mazar)?",
+            "bn": "মাজার সম্পর্কে আপনার ধারণা বা বিশ্বাস কি?"
+          },
+          "k": "shrine_beliefs",
+          "v": "This is a completely 'bidat'",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Write the names of at least 3 Islamic books you have read",
+            "bn": "আপনার পড়া হয়েছে এমন অন্তত ৩ টি ইসলামি বই এর নাম লিখুন"
+          },
+          "k": "books_read",
+          "v": "Arrahiqulmaktum, Aknozore Quran,Tafimul Quran",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Write the names of at least 3 islamic scholars of your choice",
+            "bn": "আপনার পছন্দের অন্তত ৩ জন আলেমের নাম লিখুন"
+          },
+          "k": "scholars_preferred",
+          "v": "Alhamdulillah, Dr tarik Jamil, Dr noman",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Write about your hobbies, likes and dislikes, tastes, dreams, and so on.",
+            "bn": "নিজের শখ, পছন্দ-অপছন্দ, রুচিবোধ, স্বপ্ন ইত্যাদি বিষয়ে লিখুন"
+          },
+          "k": "about_me",
+          "v": "Spending time in green nature, cooking various specialties, keeping the surroundings clean and tidy, preferring to stay indoors rather than outside, painting and visiting different places to make sightseeing specially various places associated with the memory of the Prophet Muhammad (with would be life partner.inshallah)",
+          "vi": 1
+        }
+      ]
+    },
+    "occupational-information": {
+      "gp": {
+        "k": "occupational_information",
+        "en": "Occupational information",
+        "bn": "পেশাগত তথ্য"
+      },
+      "fs": [
+        {
+          "fn": {
+            "en": "Occupation",
+            "bn": "পেশা"
+          },
+          "k": "occupation",
+          "v": "teacher",
+          "vi": 1,
+          "fv": {
+            "en": "Teacher",
+            "bn": "শিক্ষক"
+          }
+        },
+        {
+          "fn": {
+            "en": "Description of Profession",
+            "bn": "পেশার বিস্তারিত বিবরণ"
+          },
+          "k": "occupation_details",
+          "v": "Lecturer in a Islamia college",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Monthly income",
+            "bn": "মাসিক আয়"
+          },
+          "k": "monthly_income",
+          "v": "Pabna, in a college, 100% halal",
+          "vi": 1
+        }
+      ]
+    },
+    "marriage-related-information": {
+      "gp": {
+        "k": "marriage_related_information",
+        "en": "Marriage related information",
+        "bn": "বিবাহ সম্পর্কিত তথ্য"
+      },
+      "fs": [
+        {
+          "fn": {
+            "en": "Do your guardians agree to your marriage?",
+            "bn": "অভিভাবক আপনার বিয়েতে রাজি কি না?"
+          },
+          "k": "guardian_marriage_consent",
+          "v": "Yes",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Are you willing to do any job after marriage?",
+            "bn": "আপনি কি বিয়ের পর চাকরি করতে ইচ্ছুক?"
+          },
+          "k": "job_after_marriage",
+          "v": "Decide with Mutual discussion, inshallah",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Would you like to continue your studies after marriage?",
+            "bn": "বিয়ের পর পড়াশোনা চালিয়ে যেতে চান?"
+          },
+          "k": "study_after_marriage",
+          "v": "Decide with Mutual discussion, inshallah",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Would you like to continue your job after marriage?",
+            "bn": "বিয়ের পর চাকরি চালিয়ে যেতে চান?"
+          },
+          "k": "continue_job_after_marriage",
+          "v": "Mutually dicited,inshallah",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Why are you getting married? What are your thoughts on marriage?",
+            "bn": "কেন বিয়ে করছেন? বিয়ে সম্পর্কে আপনার ধারণা কি?"
+          },
+          "k": "thoughts_about_marriage",
+          "v": "Through this, half of the religion given by Allah can be fulfilled.\r\nA woman was created as a half of a man and to give him peace and fulfillment...\r\nThat's why I want a life partner through whom I can be with him in this world and the hereafter, Insha Allah...",
+          "vi": 1
+        }
+      ]
+    },
+    "expected-life-partner": {
+      "gp": {
+        "k": "expected_life_partner",
+        "en": "Expected Life Partner",
+        "bn": "প্রত্যাশিত জীবনসঙ্গী"
+      },
+      "fs": [
+        {
+          "fn": {
+            "en": "Age",
+            "bn": "বয়স"
+          },
+          "k": "expected_age",
+          "v": "30-42",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Complexion",
+            "bn": "গাত্রবর্ণ"
+          },
+          "k": "expected_complexion",
+          "v": [
+            "brown",
+            "bright_brown",
+            "fair"
+          ],
+          "vi": 1,
+          "fv": {
+            "en": "Brown, Bright Brown, Fair",
+            "bn": "শ্যামলা, উজ্জল শ্যামলা, ফর্সা"
+          }
+        },
+        {
+          "fn": {
+            "en": "Hight",
+            "bn": "উচ্চতা"
+          },
+          "k": "expected_height",
+          "v": "5.3-6.0",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Educational Qualification",
+            "bn": "শিক্ষাগত যোগ্যতা"
+          },
+          "k": "expected_education",
+          "v": "Graduate",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "District",
+            "bn": "জেলা"
+          },
+          "k": "expected_district",
+          "v": "Kushtia, jussore, Khulna, pabna, Rajshahi and Dhaka will be preferred",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Marital Status",
+            "bn": "বৈবাহিক অবস্থা"
+          },
+          "k": "expected_marital_status_female",
+          "v": [
+            "never_married"
+          ],
+          "vi": 1,
+          "fv": {
+            "en": "Never Married",
+            "bn": "অবিবাহিত"
+          }
+        },
+        {
+          "fn": {
+            "en": "Profession",
+            "bn": "পেশা"
+          },
+          "k": "expected_profession",
+          "v": "Any halal job in government or private sector or business person",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Financial condition",
+            "bn": "অর্থনৈতিক অবস্থা"
+          },
+          "k": "expected_financial_condition",
+          "v": "Middle class or upper middle class ,Suitable according kuphu...",
+          "vi": 1
+        },
+        {
+          "fn": {
+            "en": "Expected qualities or attributes of your life partner",
+            "bn": "জীবনসঙ্গীর যেসব বৈশিষ্ট্য বা গুণাবলী প্রত্যাশা করেন"
+          },
+          "k": "expected_qualities",
+          "v": "Mutual respect is very important to me in any relationship, living according to Islam and Sunnah and of course being faithful & truthful...",
+          "vi": 1
+        }
+      ]
+    },
+    "isPurchased": false,
+    "isRefunded": false,
+    "isPurchasedByOwner": false,
+    "isOwnBiodata": false,
+    "ticketId": null,
+    "isShortlisted": false,
+    "isIgnored": false,
+    "status": "discovered",
+    "rating": 0,
+    "notes": "",
+    "contact_info": {
+      "phone": "",
+      "name": "",
+      "relation": ""
+    },
+    "updated_at": "2026-10-18T15:17:55.592Z",
+    "tags": [],
+    "created_at": "2026-10-18T15:17:52.017Z"
+  }
+]

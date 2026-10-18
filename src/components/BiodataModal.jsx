@@ -17,9 +17,18 @@ import {
   AlertCircle,
   Tag,
   Save,
-  MessageSquare
+  MessageSquare,
+  PhoneCall,
+  MessageCircle
 } from 'lucide-react';
-import { LEAD_STATUSES, getStatusMeta, formatAge, formatFieldText } from '../constants';
+import { 
+  LEAD_STATUSES, 
+  getStatusMeta, 
+  formatAge, 
+  formatFieldText,
+  getCandidateContact,
+  getWhatsAppUrl
+} from '../constants';
 
 export default function BiodataModal({ 
   biodataNo, 
@@ -31,6 +40,8 @@ export default function BiodataModal({
   const [profile, setProfile] = useState(null);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
+
+  const candidateContact = getCandidateContact(biodataNo, leadData, profile);
 
   // Lead CRM state
   const [status, setStatus] = useState(leadData?.status || 'shortlisted');
@@ -145,22 +156,27 @@ export default function BiodataModal({
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-lg sm:text-xl font-black text-slate-900">
-                  পাত্রীর পূর্ণাঙ্গ বায়োডাটা
+                  {candidateContact.brideName}
                 </h2>
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-100 text-brand-800">
+                <span className="text-xs text-slate-400 font-semibold hidden sm:inline">
+                  ({candidateContact.brideNameEn})
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800">
                   ভেরিফাইড
                 </span>
               </div>
-              <p className="text-xs text-slate-500 flex items-center gap-2 mt-0.5">
-                <span>OrdhekDeen ID: <strong>{biodataNo}</strong></span>
+              <p className="text-xs text-slate-500 flex flex-wrap items-center gap-2 mt-0.5">
+                <span>বায়োডাটা নং: <strong>#{biodataNo}</strong></span>
+                <span>•</span>
+                <span className="font-mono text-emerald-700 font-bold">{candidateContact.phone}</span>
                 <span>•</span>
                 <a
-                  href={`https://ordhekdeen.com/biodatas/biodata-no-${biodataNo}`}
+                  href={`https://ordhekdeen.com/biodata/${biodataNo}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-brand-600 hover:text-brand-700 underline font-medium inline-flex items-center gap-1"
                 >
-                  View on official website <ExternalLink className="h-3 w-3" />
+                  অফিসিয়াল লিঙ্ক <ExternalLink className="h-3 w-3" />
                 </a>
               </p>
             </div>
@@ -373,17 +389,17 @@ export default function BiodataModal({
                     </div>
 
                     {/* Guardian Contact Info */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                       <div>
                         <label className="block text-xs font-bold text-slate-600 mb-1">
-                          Guardian Name (অভিভাবকের নাম):
+                          Bride Name (পাত্রীর নাম):
                         </label>
                         <input
                           type="text"
-                          value={contactInfo.name || ''}
-                          onChange={(e) => setContactInfo({ ...contactInfo, name: e.target.value })}
-                          placeholder="e.g. বাবা / ভাই"
-                          className="w-full p-2 bg-white border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-brand-500/20"
+                          value={contactInfo.brideName || candidateContact.brideName}
+                          onChange={(e) => setContactInfo({ ...contactInfo, brideName: e.target.value })}
+                          placeholder="পাত্রীর নাম"
+                          className="w-full p-2 bg-white border border-slate-200 rounded-xl text-xs font-bold focus:ring-2 focus:ring-brand-500/20"
                         />
                       </div>
                       <div>
@@ -392,10 +408,22 @@ export default function BiodataModal({
                         </label>
                         <input
                           type="text"
-                          value={contactInfo.phone || ''}
+                          value={contactInfo.phone || candidateContact.phone}
                           onChange={(e) => setContactInfo({ ...contactInfo, phone: e.target.value })}
                           placeholder="01XXXXXXXXX"
                           className="w-full p-2 bg-white border border-slate-200 rounded-xl text-xs font-mono font-medium focus:ring-2 focus:ring-brand-500/20"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-600 mb-1">
+                          Guardian Name (অভিভাবকের নাম):
+                        </label>
+                        <input
+                          type="text"
+                          value={contactInfo.name || candidateContact.name}
+                          onChange={(e) => setContactInfo({ ...contactInfo, name: e.target.value })}
+                          placeholder="e.g. বাবা / ভাই"
+                          className="w-full p-2 bg-white border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-brand-500/20"
                         />
                       </div>
                       <div>
@@ -404,12 +432,32 @@ export default function BiodataModal({
                         </label>
                         <input
                           type="text"
-                          value={contactInfo.relation || ''}
+                          value={contactInfo.relation || candidateContact.relation}
                           onChange={(e) => setContactInfo({ ...contactInfo, relation: e.target.value })}
                           placeholder="Father / Brother"
                           className="w-full p-2 bg-white border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-brand-500/20"
                         />
                       </div>
+                    </div>
+
+                    {/* Direct Contact Buttons */}
+                    <div className="flex items-center gap-2 pt-1">
+                      <a
+                        href={`tel:${(contactInfo.phone || candidateContact.phone).replace(/[^0-9+]/g, '')}`}
+                        className="inline-flex items-center gap-1.5 py-1.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs"
+                      >
+                        <PhoneCall className="h-3.5 w-3.5" />
+                        <span>সরাসরি কল করুন</span>
+                      </a>
+                      <a
+                        href={getWhatsAppUrl(contactInfo.phone || candidateContact.phone, biodataNo, contactInfo.brideName || candidateContact.brideName)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 py-1.5 px-3 bg-green-500 hover:bg-green-600 text-white rounded-xl text-xs font-bold transition-all shadow-xs"
+                      >
+                        <MessageCircle className="h-3.5 w-3.5" />
+                        <span>WhatsApp চ্যাট</span>
+                      </a>
                     </div>
 
                     {/* Tags */}

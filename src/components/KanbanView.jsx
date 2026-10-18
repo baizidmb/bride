@@ -7,13 +7,17 @@ import {
   ChevronRight, 
   ExternalLink,
   Eye,
-  Plus
+  Plus,
+  PhoneCall,
+  MessageCircle
 } from 'lucide-react';
 import { 
   LEAD_STATUSES, 
   formatAge, 
   formatLocation,
-  formatOccupation 
+  formatOccupation,
+  getCandidateContact,
+  getWhatsAppUrl
 } from '../constants';
 
 export default function KanbanView({ 
@@ -89,16 +93,32 @@ export default function KanbanView({
                     const occ = formatOccupation(lead.occupation);
                     const rating = lead.rating || 0;
                     const notesStr = typeof lead.notes === 'string' ? lead.notes : '';
+                    const contact = getCandidateContact(lead.biodata_no, lead);
 
                     return (
                       <div
                         key={lead.biodata_no}
                         className="bg-white rounded-xl p-3.5 border border-slate-200 shadow-sm hover:shadow transition-all group"
                       >
-                        {/* Card Top: ID and Star Rating */}
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-mono font-bold text-xs bg-slate-100 text-slate-800 px-2 py-0.5 rounded">
+                        {/* Bride Name & ID */}
+                        <div className="flex items-start justify-between gap-1 mb-1">
+                          <div className="min-w-0 flex-1">
+                            <h4 className="font-black text-sm text-slate-900 truncate">
+                              {contact.brideName}
+                            </h4>
+                            <p className="text-[10px] text-slate-400 font-semibold truncate">
+                              {contact.brideNameEn}
+                            </p>
+                          </div>
+                          <span className="font-mono font-bold text-xs bg-slate-100 text-slate-800 px-2 py-0.5 rounded shrink-0">
                             #{lead.biodata_no}
+                          </span>
+                        </div>
+
+                        {/* Card Rating Bar */}
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-[11px] font-bold text-slate-600">
+                            {age} Years • {occ}
                           </span>
                           <div className="flex items-center gap-0.5">
                             {[1, 2, 3, 4, 5].map((s) => (
@@ -114,20 +134,32 @@ export default function KanbanView({
                           </div>
                         </div>
 
-                        {/* Candidate Basic Info */}
-                        <div className="mb-2">
-                          <div className="flex items-center gap-2">
-                            <span className="font-bold text-sm text-slate-900">
-                              {age} Years
-                            </span>
-                            <span className="text-xs text-slate-500 font-medium truncate">
-                              • {occ}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-1 text-xs text-slate-500 mt-1">
-                            <MapPin className="h-3 w-3 text-slate-400 shrink-0" />
-                            <span className="truncate">{loc}</span>
-                          </div>
+                        {/* Location */}
+                        <div className="flex items-center gap-1 text-xs text-slate-500 mb-2">
+                          <MapPin className="h-3 w-3 text-slate-400 shrink-0" />
+                          <span className="truncate">{loc}</span>
+                        </div>
+
+                        {/* Visible Direct Contact Strip */}
+                        <div className="flex items-center justify-between text-[11px] font-bold bg-emerald-50 px-2 py-1 rounded-lg border border-emerald-200 mb-2">
+                          <a
+                            href={`tel:${contact.phone.replace(/[^0-9+]/g, '')}`}
+                            className="inline-flex items-center gap-1 text-emerald-800 hover:underline"
+                            title="সরাসরি কল করুন"
+                          >
+                            <PhoneCall className="h-3 w-3 text-emerald-600" />
+                            <span className="font-mono">{contact.phone}</span>
+                          </a>
+                          <a
+                            href={getWhatsAppUrl(contact.phone, lead.biodata_no, contact.brideName)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-0.5 text-[10px] text-green-700 hover:underline font-bold"
+                            title="WhatsApp চ্যাট"
+                          >
+                            <MessageCircle className="h-3 w-3" />
+                            <span>WA</span>
+                          </a>
                         </div>
 
                         {/* Notes snippet */}

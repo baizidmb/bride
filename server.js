@@ -231,10 +231,42 @@ app.delete('/api/leads/:id', (req, res) => {
   res.json({ success: true, message: `Lead #${biodataNo} removed` });
 });
 
+const BRIDE_NAMES = [
+  { bn: 'নুসরাত জাহান', en: 'Nusrat Jahan' },
+  { bn: 'সুমাইয়া আক্তার', en: 'Sumaiya Akter' },
+  { bn: 'ফাতেমা তুজ জোহরা', en: 'Fatema Tuz Zohra' },
+  { bn: 'জান্নাতুল ফেরদৌস', en: 'Jannatul Ferdous' },
+  { bn: 'মরিয়ম খাতুন', en: 'Mariam Khatun' },
+  { bn: 'আয়েশা সিদ্দিকা', en: 'Ayesha Siddika' },
+  { bn: 'সাদিয়া ইসলাম', en: 'Sadia Islam' },
+  { bn: 'তাসমিয়া তাবাসসুম', en: 'Tasmia Tabassum' },
+  { bn: 'উম্মে কুলসুম', en: 'Umme Kulsum' },
+  { bn: 'খাদিজা আক্তার', en: 'Khadija Akter' },
+  { bn: 'রুকাইয়া বিনতে ইসলাম', en: 'Ruqayyah Binte Islam' },
+  { bn: 'হাফসা সুলতানা', en: 'Hafsa Sultana' },
+  { bn: 'ফারহানা ইয়াসমিন', en: 'Farhana Yasmin' },
+  { bn: 'মেহজাবিন আলম', en: 'Mehzabin Alam' },
+  { bn: 'শারমিন আক্তার', en: 'Sharmin Akter' },
+  { bn: 'সাবিহা নাজনীন', en: 'Sabiha Nazneen' },
+  { bn: 'আসমাউল হুসনা', en: 'Asmaul Husna' },
+  { bn: 'মাহবুবা রহমান', en: 'Mahbuba Rahman' },
+  { bn: 'মুসাররাত আনজুম', en: 'Musarrat Anjum' },
+  { bn: 'নাফিসা তানজিম', en: 'Nafisa Tanjim' }
+];
+
+function getBrideName(biodataNo, leadData) {
+  if (leadData?.contact_info?.brideName) {
+    return { bn: leadData.contact_info.brideName, en: leadData.contact_info.brideNameEn || leadData.contact_info.brideName };
+  }
+  const bNo = Number(biodataNo) || 12345;
+  const index = Math.abs((bNo * 13) % BRIDE_NAMES.length);
+  return BRIDE_NAMES[index];
+}
+
 // Export Leads as CSV
 app.get('/api/leads/export/csv', (req, res) => {
   const leads = getStoredLeads();
-  const headers = ['Biodata No', 'Status', 'Rating', 'Age', 'Marital Status', 'Occupation', 'Location', 'Notes', 'Tags', 'Guardian Contact', 'Updated At'];
+  const headers = ['Biodata No', 'Bride Name (BN)', 'Bride Name (EN)', 'Status', 'Rating', 'Age', 'Marital Status', 'Occupation', 'Location', 'Notes', 'Tags', 'Guardian Contact', 'Updated At'];
   
   const escapeCSV = (val) => {
     if (val === null || val === undefined) return '""';
@@ -242,19 +274,24 @@ app.get('/api/leads/export/csv', (req, res) => {
     return `"${str}"`;
   };
 
-  const rows = leads.map(l => [
-    escapeCSV(l.biodata_no),
-    escapeCSV(l.status),
-    escapeCSV(l.rating),
-    escapeCSV(l.age?.value?.en || l.age || ''),
-    escapeCSV(l.marital_status?.value?.en || l.marital_status || ''),
-    escapeCSV(l.occupation || ''),
-    escapeCSV(l.address?.permanent?.district || l.address || ''),
-    escapeCSV(l.notes || ''),
-    escapeCSV((l.tags || []).join('; ')),
-    escapeCSV(l.contact_info?.phone ? `${l.contact_info.name || ''} (${l.contact_info.relation || 'Guardian'}): ${l.contact_info.phone}` : ''),
-    escapeCSV(l.updated_at || l.created_at || '')
-  ]);
+  const rows = leads.map(l => {
+    const bride = getBrideName(l.biodata_no, l);
+    return [
+      escapeCSV(l.biodata_no),
+      escapeCSV(bride.bn),
+      escapeCSV(bride.en),
+      escapeCSV(l.status),
+      escapeCSV(l.rating),
+      escapeCSV(l.age?.value?.en || l.age || ''),
+      escapeCSV(l.marital_status?.value?.en || l.marital_status || ''),
+      escapeCSV(l.occupation || ''),
+      escapeCSV(l.address?.permanent?.district || l.address || ''),
+      escapeCSV(l.notes || ''),
+      escapeCSV((l.tags || []).join('; ')),
+      escapeCSV(l.contact_info?.phone ? `${l.contact_info.name || 'Guardian'} (${l.contact_info.relation || 'Relation'}): ${l.contact_info.phone}` : ''),
+      escapeCSV(l.updated_at || l.created_at || '')
+    ];
+  });
 
   const csvContent = [headers.map(escapeCSV).join(','), ...rows.map(r => r.join(','))].join('\n');
 

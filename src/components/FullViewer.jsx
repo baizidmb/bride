@@ -66,6 +66,7 @@ export default function FullViewer({
 
   // Contact editing state
   const [isEditingContact, setIsEditingContact] = useState(false);
+  const [brideNameInput, setBrideNameInput] = useState('');
   const [phoneInput, setPhoneInput] = useState('');
   const [guardianNameInput, setGuardianNameInput] = useState('');
   const [relationInput, setRelationInput] = useState('');
@@ -97,12 +98,13 @@ export default function FullViewer({
 
   // Sync input fields when activeId changes
   useEffect(() => {
+    setBrideNameInput(contactInfo.brideName);
     setPhoneInput(contactInfo.phone);
     setGuardianNameInput(contactInfo.name);
     setRelationInput(contactInfo.relation || 'পিতা');
     setNotesInput(leadData?.notes || '');
     setIsEditingContact(false);
-  }, [activeId, leadData, contactInfo.phone, contactInfo.name, contactInfo.relation]);
+  }, [activeId, leadData, contactInfo.brideName, contactInfo.phone, contactInfo.name, contactInfo.relation]);
 
   // Fetch Full Profile Details whenever activeId changes
   useEffect(() => {
@@ -198,6 +200,7 @@ export default function FullViewer({
   const handleSaveContact = () => {
     handleLeadUpdate({
       contact_info: {
+        brideName: brideNameInput.trim() || contactInfo.brideName,
         phone: phoneInput.trim(),
         name: guardianNameInput.trim() || 'অভিভাবক',
         relation: relationInput.trim() || 'পিতা',
@@ -227,6 +230,7 @@ export default function FullViewer({
 
     const text = `🌸 *অর্ধেকদ্বীন পাত্রীর বায়োডাটা সারসংক্ষেপ* 🌸
 ━━━━━━━━━━━━━━━━━━━
+👰 *পাত্রীর নাম:* ${contactInfo.brideName} (${contactInfo.brideNameEn})
 🆔 *বায়োডাটা নং:* #${activeId}
 🔗 *অফিসিয়াল লিঙ্ক:* https://ordhekdeen.com/biodata/${activeId}
 
@@ -429,17 +433,27 @@ _OrdhekDeen Leads Matchmaking Portal_`;
                         : 'hover:bg-slate-50'
                     }`}
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <span className="font-mono font-black text-xs text-slate-900 bg-white px-2 py-0.5 rounded border border-slate-200">
-                          #{bNo}
+                    {/* Candidate Name & ID */}
+                    <div className="flex items-start justify-between gap-1">
+                      <div className="min-w-0 flex-1">
+                        <span className="font-extrabold text-xs sm:text-sm text-slate-900 block truncate">
+                          {bContact.brideName}
                         </span>
-                        <span className="text-[11px] font-bold text-slate-700">
-                          {age} বছর
+                        <span className="text-[10px] text-slate-400 font-semibold block truncate">
+                          {bContact.brideNameEn}
                         </span>
-                        <span className="text-[10px] text-slate-400">
-                          • {marital}
-                        </span>
+                      </div>
+                      <span className="font-mono font-black text-xs text-brand-700 bg-brand-50 px-2 py-0.5 rounded-md border border-brand-200 shrink-0">
+                        #{bNo}
+                      </span>
+                    </div>
+
+                    {/* Age, Status & Rating */}
+                    <div className="flex items-center justify-between text-[11px] pt-0.5">
+                      <div className="flex items-center gap-1.5 text-slate-700 font-bold">
+                        <span>{age} বছর</span>
+                        <span className="text-slate-300 font-normal">•</span>
+                        <span className="text-slate-500 font-medium">{marital}</span>
                       </div>
 
                       <div className="flex items-center gap-1">
@@ -476,7 +490,7 @@ _OrdhekDeen Leads Matchmaking Portal_`;
                         <span>{bContact.phone}</span>
                       </a>
                       <a
-                        href={getWhatsAppUrl(bContact.phone, bNo)}
+                        href={getWhatsAppUrl(bContact.phone, bNo, bContact.brideName)}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
@@ -633,7 +647,116 @@ _OrdhekDeen Leads Matchmaking Portal_`;
               <div className="max-w-4xl mx-auto space-y-6">
 
                 {/* ============================================================== */}
-                {/* PROMINENT CONTACT INFORMATION CARD (যোগাযোগের তথ্য) */}
+                {/* 1. GRAND PROFILE HERO BANNER WITH BRIDE'S NAME */}
+                {/* ============================================================== */}
+                {(() => {
+                  const genFields = profile?.['general-info']?.fs || [];
+                  const occFields = profile?.['occupational-information']?.fs || [];
+                  const addrFields = profile?.['address']?.fs || [];
+                  const getFieldVal = (fields, key) => {
+                    const f = fields.find(x => x.k === key);
+                    return formatFieldText(f?.fv) || formatFieldText(f?.v) || '';
+                  };
+                  const birthYear = getFieldVal(genFields, 'birth_year');
+                  const heightVal = getFieldVal(genFields, 'height');
+                  const complexionVal = getFieldVal(genFields, 'complexion');
+                  const maritalVal = getFieldVal(genFields, 'marital_status');
+                  const occVal = getFieldVal(occFields, 'occupation');
+                  const permDist = getFieldVal(addrFields, 'perm_address') || getFieldVal(addrFields, 'permanent_address');
+
+                  return (
+                    <div className="bg-gradient-to-br from-slate-900 via-brand-950 to-emerald-950 text-white rounded-3xl p-5 sm:p-7 shadow-lg relative overflow-hidden border border-slate-800">
+                      <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+                        <div className="space-y-2">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="font-mono font-black text-xs bg-emerald-400/20 text-emerald-300 border border-emerald-400/30 px-2.5 py-1 rounded-lg">
+                              বায়োডাটা #{activeId}
+                            </span>
+                            <span className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-white/10 text-white border border-white/10">
+                              পাত্রীর প্রোফাইল
+                            </span>
+                            <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+                              <CheckCircle2 className="h-3.5 w-3.5" />
+                              ভেরিফাইড
+                            </span>
+                          </div>
+
+                          <div className="pt-1">
+                            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight flex flex-wrap items-baseline gap-2.5">
+                              <span>{contactInfo.brideName}</span>
+                              <span className="text-base sm:text-lg font-medium text-emerald-300/80">
+                                ({contactInfo.brideNameEn})
+                              </span>
+                            </h1>
+                            <p className="text-xs sm:text-sm text-slate-300 pt-1 flex flex-wrap items-center gap-2">
+                              <span>অভিভাবক: <strong>{contactInfo.name}</strong> ({contactInfo.relation})</span>
+                              <span>•</span>
+                              <span className="font-mono text-emerald-400 font-bold">{contactInfo.phone}</span>
+                            </p>
+                          </div>
+
+                          {/* Key Quick Attributes Grid */}
+                          <div className="flex flex-wrap items-center gap-2 pt-2 text-xs">
+                            {birthYear && (
+                              <span className="px-2.5 py-1 rounded-xl bg-white/10 border border-white/10 text-slate-200">
+                                🎂 {birthYear}
+                              </span>
+                            )}
+                            {maritalVal && (
+                              <span className="px-2.5 py-1 rounded-xl bg-white/10 border border-white/10 text-slate-200">
+                                💍 {maritalVal}
+                              </span>
+                            )}
+                            {heightVal && (
+                              <span className="px-2.5 py-1 rounded-xl bg-white/10 border border-white/10 text-slate-200">
+                                📏 {heightVal}
+                              </span>
+                            )}
+                            {complexionVal && (
+                              <span className="px-2.5 py-1 rounded-xl bg-white/10 border border-white/10 text-slate-200">
+                                🎨 {complexionVal}
+                              </span>
+                            )}
+                            {occVal && (
+                              <span className="px-2.5 py-1 rounded-xl bg-emerald-500/20 border border-emerald-400/30 text-emerald-200 font-medium">
+                                💼 {occVal}
+                              </span>
+                            )}
+                            {permDist && (
+                              <span className="px-2.5 py-1 rounded-xl bg-white/10 border border-white/10 text-slate-200">
+                                📍 {permDist}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Direct Dial and WhatsApp Actions */}
+                        <div className="flex flex-row md:flex-col items-stretch sm:items-end justify-center gap-2.5 shrink-0 pt-2 md:pt-0">
+                          <a
+                            href={`tel:${contactInfo.phone.replace(/[^0-9+]/g, '')}`}
+                            className="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 py-2.5 px-5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs sm:text-sm shadow-lg hover:shadow-emerald-500/30 transition-all active:scale-95"
+                          >
+                            <PhoneCall className="h-4 w-4" />
+                            <span>সরাসরি কল করুন</span>
+                          </a>
+
+                          <a
+                            href={getWhatsAppUrl(contactInfo.phone, activeId, contactInfo.brideName)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 py-2.5 px-5 rounded-2xl bg-green-600 hover:bg-green-500 text-white font-bold text-xs sm:text-sm shadow-md transition-all active:scale-95"
+                          >
+                            <MessageCircle className="h-4 w-4" />
+                            <span>WhatsApp মেসেজ</span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* ============================================================== */}
+                {/* 2. PROMINENT CONTACT INFORMATION CARD (যোগাযোগের তথ্য) */}
                 {/* ============================================================== */}
                 <div 
                   ref={contactSectionRef}
@@ -660,7 +783,7 @@ _OrdhekDeen Leads Matchmaking Portal_`;
                       className="inline-flex items-center gap-1 py-1 px-3 rounded-lg text-xs font-bold text-emerald-800 bg-white border border-emerald-300 hover:bg-emerald-50 transition-colors shadow-xs"
                     >
                       <Edit3 className="h-3.5 w-3.5" />
-                      <span>{isEditingContact ? 'বাতিল করুন' : (currentPhone ? 'নম্বর পরিবর্তন' : '➕ নম্বর যুক্ত করুন')}</span>
+                      <span>{isEditingContact ? 'বাতিল করুন' : (currentPhone ? 'তথ্য পরিবর্তন' : '➕ তথ্য যুক্ত করুন')}</span>
                     </button>
                   </div>
 
@@ -668,9 +791,21 @@ _OrdhekDeen Leads Matchmaking Portal_`;
                   {isEditingContact ? (
                     <div className="bg-white p-4 rounded-2xl border border-emerald-200 space-y-3 mb-4 animate-in fade-in duration-200">
                       <h4 className="text-xs font-bold text-slate-700">
-                        অভিভাবকের যোগাযোগের তথ্য আপডেট করুন:
+                        পাত্রী ও অভিভাবকের যোগাযোগের তথ্য আপডেট করুন:
                       </h4>
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <div>
+                          <label className="block text-[11px] font-semibold text-slate-500 mb-1">
+                            পাত্রীর নাম (Bride Name)
+                          </label>
+                          <input
+                            type="text"
+                            value={brideNameInput}
+                            onChange={(e) => setBrideNameInput(e.target.value)}
+                            placeholder="পাত্রীর পুরো নাম লিখুন"
+                            className="w-full p-2 text-xs font-bold bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500"
+                          />
+                        </div>
                         <div>
                           <label className="block text-[11px] font-semibold text-slate-500 mb-1">
                             মোবাইল নম্বর (Phone Number)
@@ -726,8 +861,29 @@ _OrdhekDeen Leads Matchmaking Portal_`;
                     </div>
                   ) : null}
 
-                  {/* Contact Details Display */}
+                  {/* Contact Details Display Grid */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {/* Bride Name Card */}
+                    <div className="bg-white/95 p-4 rounded-2xl border border-emerald-200 shadow-sm space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="block text-xs font-bold text-slate-500">
+                          পাত্রীর নাম (Candidate Name):
+                        </span>
+                        <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md">
+                          যাচাইকৃত পাত্রী
+                        </span>
+                      </div>
+                      <span className="text-base sm:text-lg font-black text-slate-900 block truncate">
+                        {contactInfo.brideName}
+                      </span>
+                      <span className="text-xs text-slate-500 font-medium block truncate">
+                        {contactInfo.brideNameEn}
+                      </span>
+                      <span className="text-[11px] text-slate-400 block pt-1">
+                        বায়োডাটা আইডি: #{activeId}
+                      </span>
+                    </div>
+
                     {/* Mobile Phone Card */}
                     <div className="bg-white/95 p-4 rounded-2xl border border-emerald-200 shadow-sm space-y-2">
                       <div className="flex items-center justify-between">
@@ -756,10 +912,10 @@ _OrdhekDeen Leads Matchmaking Portal_`;
                             className="inline-flex items-center gap-1.5 py-1.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs"
                           >
                             <PhoneCall className="h-3.5 w-3.5" />
-                            <span>সরাসরি কল করুন</span>
+                            <span>কল করুন</span>
                           </a>
                           <a
-                            href={getWhatsAppUrl(currentPhone, activeId)}
+                            href={getWhatsAppUrl(currentPhone, activeId, contactInfo.brideName)}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1.5 py-1.5 px-3 bg-green-500 hover:bg-green-600 text-white rounded-xl text-xs font-bold transition-all shadow-xs"
@@ -787,29 +943,6 @@ _OrdhekDeen Leads Matchmaking Portal_`;
                         <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
                         OrdhekDeen ভেরিফাইড অভিভাবক
                       </span>
-                    </div>
-
-                    {/* Official Website Unlock & Share */}
-                    <div className="bg-white/95 p-4 rounded-2xl border border-emerald-200 shadow-sm sm:col-span-2 lg:col-span-1 flex flex-col justify-between">
-                      <div>
-                        <span className="block text-xs font-bold text-slate-500 mb-1">
-                          অর্ধেকদ্বীন অফিসিয়াল লিঙ্ক:
-                        </span>
-                        <p className="text-xs text-slate-600">
-                          অফিসিয়াল সাইটে সরাসরি এই বায়োডাটা দেখতে:
-                        </p>
-                      </div>
-                      <div className="mt-2.5 flex items-center gap-2">
-                        <a
-                          href={`https://ordhekdeen.com/biodata/${activeId}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex-1 text-center py-2 px-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5"
-                        >
-                          <span>OrdhekDeen পেজ ভিজিট</span>
-                          <ExternalLink className="h-3.5 w-3.5" />
-                        </a>
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -912,6 +1045,129 @@ _OrdhekDeen Leads Matchmaking Portal_`;
                 {renderSectionTable('marriage-related-information', 'বিবাহ সম্পর্কিত তথ্য', 'Marriage Related Information', CheckCircle2)}
                 {renderSectionTable('expected-life-partner', 'যেমন জীবনসঙ্গী আশা করেন', 'Expected Life Partner', Star)}
                 {renderSectionTable('pledge', 'অঙ্গীকারনামা', 'Pledge & Verification', CheckCircle2)}
+
+                {/* ============================================================== */}
+                {/* 10. SECTION 10: যোগাযোগের তথ্য (OrdhekDeen Contact Table) */}
+                {/* ============================================================== */}
+                <div id="contact-info-table" className="bg-white rounded-2xl border-2 border-emerald-500/40 shadow-xs overflow-hidden mb-5 transition-all">
+                  {/* Section Header */}
+                  <div className="bg-gradient-to-r from-emerald-50 via-teal-50/60 to-white px-4 sm:px-5 py-3 border-b border-emerald-200 flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <div className="p-1.5 rounded-lg bg-emerald-600 text-white">
+                        <Phone className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <h2 className="text-sm sm:text-base font-bold text-slate-800">
+                          যোগাযোগের তথ্য
+                        </h2>
+                        <span className="text-[11px] text-slate-400 font-normal hidden sm:inline">
+                          Contact Information (১০ম বিভাগ)
+                        </span>
+                      </div>
+                    </div>
+                    <span className="text-[11px] font-bold text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                      সরাসরি যোগাযোগযোগ্য
+                    </span>
+                  </div>
+
+                  {/* 2-Column Clean Key-Value Table matching OrdhekDeen format */}
+                  <div className="divide-y divide-slate-100 text-xs sm:text-sm">
+                    {/* Bride's Name */}
+                    <div className="grid grid-cols-1 sm:grid-cols-12 hover:bg-slate-50/60 transition-colors">
+                      <div className="sm:col-span-4 lg:col-span-5 p-3 sm:px-4 sm:py-2.5 font-bold text-slate-700 bg-slate-50/50 sm:border-r border-slate-100 flex items-center">
+                        পাত্রীর নাম (Candidate Name)
+                      </div>
+                      <div className="sm:col-span-8 lg:col-span-7 p-3 sm:px-4 sm:py-2.5 text-slate-900 font-extrabold flex items-center gap-2">
+                        <span>{contactInfo.brideName}</span>
+                        <span className="text-xs text-slate-400 font-semibold">({contactInfo.brideNameEn})</span>
+                      </div>
+                    </div>
+
+                    {/* Guardian's Name */}
+                    <div className="grid grid-cols-1 sm:grid-cols-12 hover:bg-slate-50/60 transition-colors">
+                      <div className="sm:col-span-4 lg:col-span-5 p-3 sm:px-4 sm:py-2.5 font-bold text-slate-700 bg-slate-50/50 sm:border-r border-slate-100 flex items-center">
+                        অভিভাবকের নাম (Guardian's Name)
+                      </div>
+                      <div className="sm:col-span-8 lg:col-span-7 p-3 sm:px-4 sm:py-2.5 text-slate-800 font-bold">
+                        {contactInfo.name}
+                      </div>
+                    </div>
+
+                    {/* Relationship with Candidate */}
+                    <div className="grid grid-cols-1 sm:grid-cols-12 hover:bg-slate-50/60 transition-colors">
+                      <div className="sm:col-span-4 lg:col-span-5 p-3 sm:px-4 sm:py-2.5 font-bold text-slate-700 bg-slate-50/50 sm:border-r border-slate-100 flex items-center">
+                        পাত্রীর সাথে অভিভাবকের সম্পর্ক
+                      </div>
+                      <div className="sm:col-span-8 lg:col-span-7 p-3 sm:px-4 sm:py-2.5 text-slate-800 font-medium">
+                        {contactInfo.relation}
+                      </div>
+                    </div>
+
+                    {/* Guardian Mobile Number with Live Action buttons */}
+                    <div className="grid grid-cols-1 sm:grid-cols-12 hover:bg-slate-50/60 transition-colors">
+                      <div className="sm:col-span-4 lg:col-span-5 p-3 sm:px-4 sm:py-2.5 font-bold text-slate-700 bg-slate-50/50 sm:border-r border-slate-100 flex items-center">
+                        অভিভাবকের মোবাইল নম্বর
+                      </div>
+                      <div className="sm:col-span-8 lg:col-span-7 p-3 sm:px-4 sm:py-2.5 text-slate-800 flex flex-wrap items-center gap-3">
+                        <span className="font-mono font-black text-emerald-800 text-sm sm:text-base">{contactInfo.phone}</span>
+                        <a
+                          href={`tel:${contactInfo.phone.replace(/[^0-9+]/g, '')}`}
+                          className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-colors shadow-xs"
+                        >
+                          <PhoneCall className="h-3.5 w-3.5" />
+                          <span>কল করুন</span>
+                        </a>
+                        <a
+                          href={getWhatsAppUrl(contactInfo.phone, activeId, contactInfo.brideName)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded-lg text-xs font-bold transition-colors shadow-xs"
+                        >
+                          <MessageCircle className="h-3.5 w-3.5" />
+                          <span>WhatsApp</span>
+                        </a>
+                      </div>
+                    </div>
+
+                    {/* Best Time to Call */}
+                    <div className="grid grid-cols-1 sm:grid-cols-12 hover:bg-slate-50/60 transition-colors">
+                      <div className="sm:col-span-4 lg:col-span-5 p-3 sm:px-4 sm:py-2.5 font-bold text-slate-700 bg-slate-50/50 sm:border-r border-slate-100 flex items-center">
+                        যোগাযোগের উপযুক্ত সময়
+                      </div>
+                      <div className="sm:col-span-8 lg:col-span-7 p-3 sm:px-4 sm:py-2.5 text-slate-800">
+                        {contactInfo.timeToCall}
+                      </div>
+                    </div>
+
+                    {/* Contact Email */}
+                    <div className="grid grid-cols-1 sm:grid-cols-12 hover:bg-slate-50/60 transition-colors">
+                      <div className="sm:col-span-4 lg:col-span-5 p-3 sm:px-4 sm:py-2.5 font-bold text-slate-700 bg-slate-50/50 sm:border-r border-slate-100 flex items-center">
+                        পাত্রী / অভিভাবকের ই-মেইল
+                      </div>
+                      <div className="sm:col-span-8 lg:col-span-7 p-3 sm:px-4 sm:py-2.5 font-mono text-slate-700">
+                        {contactInfo.email}
+                      </div>
+                    </div>
+
+                    {/* Official Website Link */}
+                    <div className="grid grid-cols-1 sm:grid-cols-12 hover:bg-slate-50/60 transition-colors">
+                      <div className="sm:col-span-4 lg:col-span-5 p-3 sm:px-4 sm:py-2.5 font-bold text-slate-700 bg-slate-50/50 sm:border-r border-slate-100 flex items-center">
+                        অফিসিয়াল বায়োডাটা লিঙ্ক
+                      </div>
+                      <div className="sm:col-span-8 lg:col-span-7 p-3 sm:px-4 sm:py-2.5">
+                        <a
+                          href={`https://ordhekdeen.com/biodata/${activeId}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-brand-600 hover:text-brand-800 hover:underline font-medium inline-flex items-center gap-1"
+                        >
+                          <span>https://ordhekdeen.com/biodata/{activeId}</span>
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
               </div>
             )}

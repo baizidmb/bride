@@ -144,16 +144,22 @@ export default function BiodataCard({
 
         {/* Profile Header Details */}
         <div className="mb-3">
-          <div className="flex items-baseline gap-2">
-            <h3 className="font-extrabold text-base text-slate-900">
-              পাত্রীর বায়োডাটা
-            </h3>
-            <span className="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700">
+          <div className="flex items-start justify-between gap-1 mb-1">
+            <div className="min-w-0 flex-1">
+              <h3 className="font-black text-base text-slate-900 truncate">
+                {contact.brideName}
+              </h3>
+              <p className="text-[11px] font-semibold text-slate-400 truncate">
+                {contact.brideNameEn}
+              </p>
+            </div>
+            <span className="text-xs font-bold px-2 py-0.5 rounded-lg bg-slate-100 text-slate-700 shrink-0">
               {age} yrs
             </span>
-            <span className="text-xs text-slate-500 font-medium">
-              • {marital}
-            </span>
+          </div>
+
+          <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+            <span>বৈবাহিক অবস্থা: <strong>{marital}</strong></span>
           </div>
 
           {/* Quick attributes pills */}
@@ -190,7 +196,7 @@ export default function BiodataCard({
               <span className="font-mono">{contact.phone}</span>
             </a>
             <a
-              href={getWhatsAppUrl(contact.phone, biodataNo)}
+              href={getWhatsAppUrl(contact.phone, biodataNo, contact.brideName)}
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
