@@ -36,7 +36,7 @@ export default function FilterBar({
     filters.district !== 'all' ? 1 : 0,
     filters.marital_status !== 'all' ? 1 : 0,
     filters.education_method !== 'all' ? 1 : 0,
-    filters.min_age !== 18 || filters.max_age !== 40 ? 1 : 0,
+    filters.min_age !== 16 || filters.max_age !== 50 ? 1 : 0,
   ].reduce((a, b) => a + b, 0);
 
   return (
@@ -54,6 +54,7 @@ export default function FilterBar({
               type="text"
               value={filters.biodata_no || ''}
               onChange={(e) => setFilters(prev => ({ ...prev, biodata_no: e.target.value }))}
+              onKeyDown={(e) => e.key === 'Enter' && onApplyFilters && onApplyFilters()}
               placeholder="e.g. 24590, 34026..."
               className="w-full pl-9 pr-8 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all font-mono"
             />
@@ -193,7 +194,7 @@ export default function FilterBar({
           <div className="flex items-center gap-2">
             <input
               type="range"
-              min="18"
+              min="16"
               max="45"
               value={filters.min_age}
               onChange={(e) => {
@@ -205,7 +206,7 @@ export default function FilterBar({
             <span className="text-xs text-slate-400">to</span>
             <input
               type="range"
-              min="19"
+              min="18"
               max="50"
               value={filters.max_age}
               onChange={(e) => {

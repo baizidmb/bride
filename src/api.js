@@ -154,9 +154,42 @@ export async function deleteLead(biodataNo) {
   return true;
 }
 
+const DISTRICT_ALIASES = {
+  "cox's bazar": ['cox', 'cox’s bazar', "cox's bazar", 'কক্সবাজার'],
+  "chapai nawabganj": ['chapai', 'nawabganj', 'chapainawabganj', 'চাঁপাইনবাবগঞ্জ'],
+  "jhalokati": ['jhalokati', 'jhalakathi', 'ঝালকাঠি'],
+  "chittagong": ['chittagong', 'chattogram', 'চট্টগ্রাম'],
+  "cumilla": ['cumilla', 'comilla', 'কুমিল্লা'],
+  "bogura": ['bogura', 'bogra', 'বগুড়া', 'বগুরা'],
+  "jashore": ['jashore', 'jessore', 'যশোর'],
+  "barisal": ['barisal', 'barishal', 'বরিশাল'],
+  "netrokona": ['netrokona', 'netrakona', 'নেত্রকোণা', 'নেত্রকোনা'],
+  "moulvibazar": ['moulvibazar', 'morbazar', 'মৌলভীবাজার'],
+  "brahmanbaria": ['brahmanbaria', 'ব্রাহ্মণবাড়িয়া', 'ব্রাহ্মণবাড়িয়া'],
+};
+
+// Safe helper to extract searchable location string from candidate
+export function getAddressSearchString(b) {
+  if (!b || !b.address) return '';
+  const addr = b.address;
+  if (typeof addr === 'string') return addr.toLowerCase();
+  let result = '';
+  if (addr.value) {
+    if (typeof addr.value === 'string') {
+      result += ' ' + addr.value;
+    } else if (typeof addr.value === 'object' && addr.value !== null) {
+      if (typeof addr.value.en === 'string') result += ' ' + addr.value.en;
+      if (typeof addr.value.bn === 'string') result += ' ' + addr.value.bn;
+    }
+  }
+  if (typeof addr.en === 'string') result += ' ' + addr.en;
+  if (typeof addr.bn === 'string') result += ' ' + addr.bn;
+  return (result || JSON.stringify(addr)).toLowerCase();
+}
+
 // 5. Search Biodatas (Offline client search fallback for GitHub Pages)
 export async function searchBiodatas(page = 1, limit = 12, userFilters = {}) {
-  // Try remote backend first
+  // Try remote backend first (when running with Express server)
   try {
     const apiFilters = {
       biodata_type: ['female'],
@@ -179,8 +212,8 @@ export async function searchBiodatas(page = 1, limit = 12, userFilters = {}) {
           data: json.data.data || [],
           pagination: json.data.pagination || {
             currentPage: page,
-            total: json.data.total || (json.data.data ? json.data.data.length : 0),
-            total_pages: Math.ceil((json.data.total || 1) / limit)
+            total: json.data.pagination?.total || (json.data.data ? json.data.data.length : 0),
+            total_pages: json.data.pagination?.total_pages || Math.ceil((json.data.data?.length || 1) / limit)
           }
         };
       }
@@ -189,52 +222,74 @@ export async function searchBiodatas(page = 1, limit = 12, userFilters = {}) {
     // Normal when running statically on GitHub Pages
   }
 
-  // OFFLINE / GITHUB PAGES CLIENT-SIDE FILTERING:
+  // OFFLINE / GITHUB PAGES CLIENT-SIDE FILTERING (ALL 6,416 CANDIDATES):
   let results = [...bundledBiodatas];
 
-  // Filter: Biodata ID
+  // 1. Filter: Biodata ID
   if (userFilters.biodata_no) {
     const q = String(userFilters.biodata_no).trim();
     results = results.filter(b => String(b.biodata_no).includes(q));
   }
 
-  // Filter: Marital status
+  // 2. Filter: Marital status (handles underscore vs spaces & Bengali text)
   if (userFilters.marital_status && userFilters.marital_status !== 'all') {
+    const target = String(userFilters.marital_status).toLowerCase().replace(/[\s_]+/g, '');
     results = results.filter(b => {
-      const ms = b.marital_status?.value?.en || b.marital_status || '';
-      return String(ms).toLowerCase().includes(String(userFilters.marital_status).toLowerCase());
+      const msEn = String(b.marital_status?.value?.en || b.marital_status?.en || (typeof b.marital_status === 'string' ? b.marital_status : '')).toLowerCase().replace(/[\s_]+/g, '');
+      const msBn = String(b.marital_status?.value?.bn || b.marital_status?.bn || '');
+      return msEn.includes(target) ||
+        (target === 'nevermarried' && msBn.includes('অবিবাহিত')) ||
+        (target === 'divorced' && msBn.includes('ডিভোর্স')) ||
+        (target === 'widow' && msBn.includes('বিধবা'));
     });
   }
 
-  // Filter: Education method
+  // 3. Filter: Education method (general, alia, qawmi)
   if (userFilters.education_method && userFilters.education_method !== 'all') {
+    const targetEd = String(userFilters.education_method).toLowerCase().trim();
     results = results.filter(b => {
-      const em = b.education_method?.value?.en || b.education_method || '';
-      return String(em).toLowerCase().includes(String(userFilters.education_method).toLowerCase());
+      const ed = String(b.education_method?.value?.en || b.education_method || '').toLowerCase().trim();
+      return ed === targetEd || ed.includes(targetEd);
     });
   }
 
-  // Filter: District
+  // 4. Filter: District / Division
   if (userFilters.district && userFilters.district !== 'all') {
+    const dKey = String(userFilters.district).toLowerCase().trim();
+    const tokens = DISTRICT_ALIASES[dKey] || [dKey];
     results = results.filter(b => {
-      const locStr = JSON.stringify(b.address || '').toLowerCase();
-      return locStr.includes(String(userFilters.district).toLowerCase());
+      const addr = getAddressSearchString(b);
+      return tokens.some(t => addr.includes(t.toLowerCase()));
     });
   } else if (userFilters.division && userFilters.division !== 'all') {
-    results = results.filter(b => {
-      const locStr = JSON.stringify(b.address || '').toLowerCase();
-      return locStr.includes(String(userFilters.division).toLowerCase());
-    });
+    const divName = String(userFilters.division).toLowerCase().trim();
+    const divObj = DIVISIONS.find(d => d.name.toLowerCase() === divName || d.bn === userFilters.division);
+    if (divObj) {
+      const allTokens = [divObj.name.toLowerCase(), divObj.bn.toLowerCase()];
+      divObj.districts.forEach(dist => {
+        const dKey = dist.toLowerCase();
+        const aliases = DISTRICT_ALIASES[dKey] || [dKey];
+        aliases.forEach(a => allTokens.push(a.toLowerCase()));
+      });
+      results = results.filter(b => {
+        const addr = getAddressSearchString(b);
+        return allTokens.some(t => addr.includes(t));
+      });
+    }
   }
 
-  // Filter: Age
-  if (userFilters.min_age || userFilters.max_age) {
-    const minA = Number(userFilters.min_age) || 18;
-    const maxA = Number(userFilters.max_age) || 60;
-    results = results.filter(b => {
-      const a = Number(b.age?.value?.en || b.age || 22);
-      return a >= minA && a <= maxA;
-    });
+  // 5. Filter: Age range
+  if (userFilters.min_age !== undefined && userFilters.max_age !== undefined) {
+    const minA = Number(userFilters.min_age);
+    const maxA = Number(userFilters.max_age);
+    // Apply filtering only if within a constrained range
+    if (minA > 16 || maxA < 50) {
+      results = results.filter(b => {
+        const a = Number(b.age?.value?.en || b.age?.en || b.age);
+        if (!a || isNaN(a)) return true;
+        return a >= minA && a <= maxA;
+      });
+    }
   }
 
   const total = results.length;

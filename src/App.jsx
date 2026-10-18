@@ -42,8 +42,8 @@ export default function App() {
     district: 'all',
     marital_status: 'all',
     education_method: 'all',
-    min_age: 18,
-    max_age: 40,
+    min_age: 16,
+    max_age: 50,
   });
 
   // Modal / Selection States
@@ -106,8 +106,8 @@ export default function App() {
       district: 'all',
       marital_status: 'all',
       education_method: 'all',
-      min_age: 18,
-      max_age: 40,
+      min_age: 16,
+      max_age: 50,
     };
     setFilters(defaultFilters);
     fetchLiveBiodatas(1, defaultFilters);
@@ -214,7 +214,7 @@ export default function App() {
               </button>
 
               <span className="text-xs text-slate-400 font-medium hidden sm:inline">
-                মোট {pagination.total || 6415} পাত্রীর মধ্য থেকে ভিউ করা হচ্ছে
+                মোট {pagination.total || 6416} পাত্রীর মধ্য থেকে ভিউ করা হচ্ছে
               </span>
             </div>
 
