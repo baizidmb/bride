@@ -20,6 +20,8 @@ import {
 } from 'lucide-react';
 
 import { fetchLocations, fetchLeads, saveLead, deleteLead, searchBiodatas } from './api';
+import zynsiteHorizontal from './assets/zynsite-horizontal.png';
+import zynsiteIcon from './assets/zynsite-icon.png';
 
 export default function App() {
   const [currentTab, setCurrentTab] = useState('viewer'); // 'viewer' | 'saved' | 'explore'
@@ -438,12 +440,38 @@ export default function App() {
         )}
       </main>
 
-      {/* Clean Minimal Footer */}
-      <footer className="border-t border-slate-200 bg-white py-4 mt-8 text-center text-xs text-slate-400">
-        <div className="max-w-7xl mx-auto px-4">
-          <p className="font-semibold text-slate-600">
-            অর্ধেকদ্বীন পাত্রী ডিরেক্টরি ও ম্যাচমেকিং পোর্টাল
-          </p>
+      {/* Clean Modern Footer with ZYNSITE Branding */}
+      <footer className="border-t border-slate-200/90 bg-white py-6 mt-12 text-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <a 
+              href="https://zynsite.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center hover:opacity-85 transition-opacity"
+              title="ZYNSITE.COM"
+            >
+              <img src={zynsiteHorizontal} alt="ZYNSITE.COM" className="h-6 sm:h-7 w-auto object-contain" />
+            </a>
+            <span className="text-slate-300 hidden sm:inline">|</span>
+            <span className="font-bold text-slate-700 hidden sm:inline">
+              অর্ধেকদ্বীন পাত্রী ডিরেক্টরি ও ম্যাচমেকিং পোর্টাল
+            </span>
+          </div>
+          <div className="flex items-center gap-3 text-slate-500 font-medium">
+            <span>© {new Date().getFullYear()} ZYNSITE.COM</span>
+            <span>•</span>
+            <span>All Rights Reserved</span>
+            <span>•</span>
+            <a 
+              href="https://ordhekdeen.com" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-brand-600 hover:text-brand-800 hover:underline"
+            >
+              OrdhekDeen
+            </a>
+          </div>
         </div>
       </footer>
 

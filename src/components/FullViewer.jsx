@@ -41,6 +41,7 @@ import {
   getWhatsAppUrl
 } from '../constants';
 import { fetchBiodataDetail } from '../api';
+import zynsiteIcon from '../assets/zynsite-icon.png';
 
 export default function FullViewer({
   biodatas = [],
@@ -255,7 +256,7 @@ export default function FullViewer({
 • মাতার পেশা: ${getVal(fam, 'is_mother_alive')} (${getVal(fam, 'mothers_profession')})
 
 ━━━━━━━━━━━━━━━━━━━
-_OrdhekDeen Leads Matchmaking Portal_`;
+_ZYNSITE • OrdhekDeen Bride Leads Portal_ (https://zynsite.com)`;
 
     navigator.clipboard.writeText(text);
     setCopySuccess(true);
@@ -688,6 +689,10 @@ _OrdhekDeen Leads Matchmaking Portal_`;
                             <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
                               <CheckCircle2 className="h-3.5 w-3.5" />
                               ভেরিফাইড
+                            </span>
+                            <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-white/10 text-white border border-white/15 flex items-center gap-1.5 shadow-2xs">
+                              <img src={zynsiteIcon} alt="Zynsite" className="h-3.5 w-3.5 object-contain" />
+                              <span className="text-[11px] tracking-wide">ZYNSITE VERIFIED</span>
                             </span>
                           </div>
 

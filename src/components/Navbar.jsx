@@ -9,8 +9,11 @@ import {
   Download, 
   ExternalLink,
   Menu,
-  X
+  X,
+  Globe
 } from 'lucide-react';
+import zynsiteHorizontal from '../assets/zynsite-horizontal.png';
+import zynsiteIcon from '../assets/zynsite-icon.png';
 
 export default function Navbar({ 
   currentTab, 
@@ -38,20 +41,30 @@ export default function Navbar({
         <div className="flex items-center justify-between h-16 gap-3">
           
           {/* Logo & Title */}
-          <div className="flex items-center gap-2.5 shrink-0">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-500 flex items-center justify-center text-white shadow-xs">
-              <Heart className="h-5 w-5 fill-white" />
-            </div>
-            <div>
+          <div className="flex items-center gap-3 shrink-0">
+            <a 
+              href="https://zynsite.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center transition-transform hover:scale-102"
+              title="ZYNSITE.COM"
+            >
+              <img 
+                src={zynsiteHorizontal} 
+                alt="ZYNSITE.COM" 
+                className="h-8 sm:h-9 w-auto object-contain drop-shadow-xs" 
+              />
+            </a>
+            <div className="hidden sm:block pl-2.5 border-l border-slate-200">
               <div className="flex items-center gap-1.5">
-                <span className="font-extrabold text-base sm:text-lg text-slate-900 tracking-tight">
+                <span className="font-extrabold text-sm sm:text-base text-slate-900 tracking-tight">
                   OrdhekDeen <span className="text-brand-600 font-black">Bride Leads</span>
                 </span>
-                <span className="hidden md:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                <span className="hidden lg:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
                   পাত্রী ট্র্যাকার
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 hidden lg:block -mt-0.5">
+              <p className="text-[11px] text-slate-400 hidden xl:block -mt-0.5">
                 সম্ভাব্য পাত্রী অনুসন্ধান, মূল্যায়ন ও সরাসরি যোগাযোগের পোর্টাল
               </p>
             </div>
@@ -130,6 +143,18 @@ export default function Navbar({
               <span className="hidden sm:inline">এক্সপোর্ট</span>
             </button>
 
+            {/* Official ZYNSITE link */}
+            <a
+              href="https://zynsite.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden lg:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 border border-purple-200/60 transition-colors shadow-2xs"
+              title="Visit ZYNSITE.COM"
+            >
+              <img src={zynsiteIcon} alt="Zynsite" className="h-3.5 w-3.5 object-contain" />
+              <span>zynsite.com</span>
+            </a>
+
             {/* Official OrdhekDeen link */}
             <a
               href="https://ordhekdeen.com"
@@ -154,7 +179,13 @@ export default function Navbar({
 
         {/* Mobile Dropdown Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-3 border-t border-slate-200 space-y-1.5 animate-in slide-in-from-top duration-150">
+          <div className="md:hidden py-3 border-t border-slate-200 space-y-2 animate-in slide-in-from-top duration-150">
+            <div className="px-2.5 pb-2 border-b border-slate-100 flex items-center justify-between">
+              <img src={zynsiteHorizontal} alt="ZYNSITE" className="h-6 w-auto object-contain" />
+              <span className="text-[10px] font-bold text-brand-700 bg-brand-50 px-2 py-0.5 rounded-md border border-brand-200">
+                Bride Leads Tracker
+              </span>
+            </div>
             <button
               onClick={() => handleNavClick('viewer')}
               className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold ${

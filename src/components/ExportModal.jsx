@@ -9,6 +9,7 @@ import {
   AlertCircle 
 } from 'lucide-react';
 import { exportLeadsToCSV } from '../api';
+import zynsiteIcon from '../assets/zynsite-icon.png';
 
 export default function ExportModal({ 
   leads, 
@@ -25,7 +26,7 @@ export default function ExportModal({
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(leads, null, 2));
     const downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", `potential_bride_leads_${new Date().toISOString().slice(0, 10)}.json`);
+    downloadAnchor.setAttribute("download", `zynsite_bride_leads_${new Date().toISOString().slice(0, 10)}.json`);
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
@@ -57,13 +58,13 @@ export default function ExportModal({
         
         {/* Header */}
         <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-brand-100 text-brand-700">
-              <Download className="h-5 w-5" />
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-2xl bg-white border border-slate-200/80 shadow-xs flex items-center justify-center p-1.5 overflow-hidden">
+              <img src={zynsiteIcon} alt="Zynsite" className="h-full w-full object-contain" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-slate-900">
-                Export & Backup Leads
+              <h2 className="text-base font-bold text-slate-900 flex items-center gap-1.5">
+                <span>ZYNSITE Leads Export & Backup</span>
               </h2>
               <p className="text-xs text-slate-500">
                 Download your evaluated bride leads or share with family
